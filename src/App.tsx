@@ -1,25 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { MotionConfig, motion, useScroll, useSpring } from "framer-motion";
 import {
   ArrowDown,
   ArrowRight,
   BadgeCheck,
-  BookOpen,
   Check,
   CloudLightning,
   Eye,
   Flag,
   LifeBuoy,
-  MapPinned,
   Mountain,
-  RotateCcw,
   ShieldCheck,
   Waves,
 } from "lucide-react";
 import { hazards, type Hazard } from "@/src/data/hazards";
-import BeachMap, { type BeachHotspot } from "./components/BeachMap";
+import AccidentSceneMap from "./components/AccidentSceneMap";
 import GuideAvatar3D, {
   type GuideGesture,
   type GuideReaction,
@@ -78,15 +75,13 @@ type Chapter = {
 
 const chapters: Chapter[] = [
   { id: "top", label: "Welcome", shortLabel: "00" },
-  { id: "directory", label: "Hazard directory", shortLabel: "INDEX" },
+  { id: "directory", label: "Accident map", shortLabel: "MAP" },
   ...hazards.map((hazard, index) => ({
     id: `story-${hazard.id}`,
     label: hazard.title,
     shortLabel: String(index + 1).padStart(2, "0"),
   })),
-  { id: "beach-map", label: "Read a beach", shortLabel: "MAP" },
   { id: "safety", label: "Safety check", shortLabel: "CHECK" },
-  { id: "finish", label: "Ready for the coast", shortLabel: "END" },
 ];
 
 function jumpTo(id: string) {
@@ -124,7 +119,9 @@ function SectionShell({
 function Companion({ activeId }: { activeId: string }) {
   const activeHazard = hazards.find((hazard) => activeId === `story-${hazard.id}`);
   const reaction = (activeHazard?.mascotReaction ??
-    (activeId === "finish" ? "relieved" : activeId === "safety" ? "confident" : "neutral")) as GuideReaction;
+    (activeId === "safety" ? "confident" : "neutral")) as GuideReaction;
+
+  if (activeId === "directory") return null;
 
   return (
     <aside className="scroll-companion" aria-label="Expressive 3D beach-safety guide">
@@ -153,7 +150,7 @@ function HazardStory({
 }) {
   const nextId = index < hazards.length - 1
     ? `story-${hazards[index + 1].id}`
-    : "beach-map";
+    : "safety";
 
   return (
     <SectionShell
@@ -176,11 +173,6 @@ function HazardStory({
       <article className="hazard-chapter__copy">
         <p className="mono-kicker">FIELD NOTE / {String(index + 1).padStart(2, "0")}</p>
         <h2>{hazard.title}</h2>
-        <div className="hazard-chapter__why">
-          <span>Why it matters</span>
-          <p>{hazard.dangerExplanation}</p>
-        </div>
-
         <button
           className="reveal-button"
           type="button"
@@ -189,7 +181,7 @@ function HazardStory({
           aria-controls={`${hazard.id}-action`}
         >
           <ShieldCheck aria-hidden="true" />
-          <span>{revealed ? "Calm move revealed" : "Reveal the calm move"}</span>
+          <span>Safe action</span>
           <ArrowDown aria-hidden="true" />
         </button>
         <div
@@ -202,7 +194,7 @@ function HazardStory({
         </div>
 
         <button className="chapter-next" type="button" onClick={() => jumpTo(nextId)}>
-          {index < hazards.length - 1 ? "Next field note" : "Practice reading a beach"}
+          {index < hazards.length - 1 ? "Next field note" : "Safety check"}
           <ArrowDown aria-hidden="true" />
         </button>
       </article>
@@ -212,7 +204,6 @@ function HazardStory({
 
 export default function App() {
   const [activeSection, setActiveSection] = useState("top");
-  const [mapHotspot, setMapHotspot] = useState<BeachHotspot | null>(null);
   const [revealedHazards, setRevealedHazards] = useState<string[]>([]);
   const [checkedHabits, setCheckedHabits] = useState<number[]>([]);
   const { scrollYProgress } = useScroll();
@@ -236,11 +227,6 @@ export default function App() {
   const activeChapterIndex = Math.max(0, chapters.findIndex((chapter) => chapter.id === activeSection));
   const activeChapter = chapters[activeChapterIndex] ?? chapters[0];
   const checkedComplete = checkedHabits.length === safetyPrinciples.length;
-
-  const directoryItems = useMemo(
-    () => hazards.map((hazard, index) => ({ hazard, index, target: `story-${hazard.id}` })),
-    [],
-  );
 
   const toggleReveal = (id: string) => {
     setRevealedHazards((current) =>
@@ -315,22 +301,8 @@ export default function App() {
             <div className="scroll-cue"><ArrowDown aria-hidden="true" /> Scroll to continue</div>
           </SectionShell>
 
-          <SectionShell id="directory" className="directory-section" label="Hazard directory">
-            <div className="scroll-heading">
-              <p className="mono-kicker"><BookOpen aria-hidden="true" /> CLICK-TO-JUMP DIRECTORY</p>
-              <h2>Pick a hazard.<br /><span>Jump in.</span></h2>
-              <p>Scroll in order or choose any scene.</p>
-            </div>
-            <div className="directory-grid">
-              {directoryItems.map(({ hazard, index, target }) => (
-                <button className="directory-card" type="button" key={hazard.id} onClick={() => jumpTo(target)}>
-                  <HazardVisual sceneType={hazard.sceneType} decorative />
-                  <span className="directory-card__number">{String(index + 1).padStart(2, "0")}</span>
-                  <strong>{hazard.title}</strong>
-                  <ArrowDown aria-hidden="true" />
-                </button>
-              ))}
-            </div>
+          <SectionShell id="directory" className="whole-map-section" label="Whole beach accident map">
+            <AccidentSceneMap onJump={jumpTo} />
           </SectionShell>
 
           {hazards.map((hazard, index) => (
@@ -343,33 +315,7 @@ export default function App() {
             />
           ))}
 
-          <SectionShell id="beach-map" className="practice-section" label="Practice reading a beach">
-            <div className="scroll-heading scroll-heading--split">
-              <div>
-                <p className="mono-kicker"><MapPinned aria-hidden="true" /> JUMP-IN PRACTICE</p>
-                <h2>Read the whole beach.</h2>
-              </div>
-              <p>Click a marker and spot the clue.</p>
-            </div>
-            <div className="practice-layout">
-              <BeachMap className="illustrated-map" onSelect={setMapHotspot} />
-              <aside className="practice-readout" aria-live="polite">
-                <span>{mapHotspot ? "SIGNAL IDENTIFIED" : "SCAN THE BEACH"}</span>
-                <h3>{mapHotspot?.title ?? "What changed?"}</h3>
-                <p>{mapHotspot?.description ?? "Choose a marker."}</p>
-                <button type="button" onClick={() => jumpTo("safety")}>Continue to the safety check <ArrowDown aria-hidden="true" /></button>
-              </aside>
-            </div>
-          </SectionShell>
-
           <SectionShell id="safety" className="safety-section" label="Six calm safety habits">
-            <div className="scroll-heading scroll-heading--split">
-              <div>
-                <p className="mono-kicker"><ShieldCheck aria-hidden="true" /> TAP TO PACK EACH HABIT</p>
-                <h2>Your sixty-second safety check.</h2>
-              </div>
-              <p>{checkedHabits.length} of {safetyPrinciples.length} packed.</p>
-            </div>
             <div className="safety-grid">
               {safetyPrinciples.map((principle, index) => {
                 const Icon = principle.icon;
@@ -399,19 +345,6 @@ export default function App() {
             </div>
           </SectionShell>
 
-          <SectionShell id="finish" className="finish-section" label="Presentation complete">
-            <p className="mono-kicker">END OF FIELD GUIDE / START OF A SAFER BEACH DAY</p>
-            <h2>Look first.<br /><span>Then step in.</span></h2>
-            <p>Notice change early. Give hazards space. Choose the safe move.</p>
-            <div className="finish-actions">
-              <button className="bw-button bw-button--light" type="button" onClick={() => jumpTo("directory")}>
-                Review the directory <BookOpen aria-hidden="true" />
-              </button>
-              <button className="bw-button" type="button" onClick={() => jumpTo("top")}>
-                Start again <RotateCcw aria-hidden="true" />
-              </button>
-            </div>
-          </SectionShell>
         </main>
 
         <footer className="scroll-footer">

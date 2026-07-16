@@ -1385,6 +1385,95 @@ body::before { background: #000; }
 .scroll-cue svg { width: 14px; animation: monochromeBounce 1.8s ease-in-out infinite; }
 
 .directory-section { display: flex; min-height: auto; flex-direction: column; }
+
+/* One illustrated beach scene containing all nine accidents */
+.whole-map-section {
+  display: grid;
+  width: min(calc(100% - 88px), 1580px);
+  min-height: 100svh;
+  place-items: center;
+  padding-right: 48px;
+}
+
+.accident-scene-map {
+  position: relative;
+  width: 100%;
+  min-height: clamp(620px, 72vh, 820px);
+  border: 2px solid #fff;
+  border-radius: 34px;
+  background: #87d7f2;
+  box-shadow: 0 42px 120px rgba(0, 0, 0, .5);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.accident-scene-map__art,
+.accident-scene-map__markers { position: absolute; inset: 0; }
+.accident-scene-map__art { z-index: 1; overflow: hidden; }
+.accident-scene-map__markers { z-index: 10; }
+.accident-scene-map__sky { position: absolute; inset: 0 0 43%; background: linear-gradient(180deg, #70c9ee 0%, #bceafa 78%, #e8f9ff 100%); }
+.accident-scene-map__sun { position: absolute; z-index: 2; top: 8%; left: 18%; width: 82px; height: 82px; border: 5px solid rgba(255,255,255,.8); border-radius: 50%; background: #ffe06a; box-shadow: 0 0 0 16px rgba(255,224,106,.18); }
+
+.accident-scene-map__cloud { position: absolute; z-index: 3; width: 130px; height: 36px; border-radius: 999px; background: #fff; box-shadow: 0 8px 18px rgba(31,83,105,.14); }
+.accident-scene-map__cloud::before,
+.accident-scene-map__cloud::after,
+.accident-scene-map__cloud i { position: absolute; content: ""; border-radius: 50%; background: inherit; }
+.accident-scene-map__cloud::before { left: 18px; bottom: 2px; width: 52px; height: 52px; }
+.accident-scene-map__cloud::after { right: 19px; bottom: 1px; width: 66px; height: 66px; }
+.accident-scene-map__cloud i:first-child { left: 52px; bottom: 5px; width: 42px; height: 42px; }
+.accident-scene-map__cloud--one { top: 11%; left: 33%; transform: scale(.78); }
+.accident-scene-map__cloud--storm { top: 11%; left: 55%; width: 170px; background: #596879; transform: scale(1.08); }
+.accident-scene-map__cloud--storm::after { background: #4a5969; }
+.accident-scene-map__lightning { position: absolute; z-index: 4; top: 17%; left: 62%; width: 26px; height: 96px; background: #ffe34f; clip-path: polygon(48% 0, 100% 0, 65% 37%, 100% 37%, 24% 100%, 43% 53%, 10% 53%); filter: drop-shadow(0 0 8px rgba(255,227,79,.8)); }
+
+.accident-scene-map__ocean { position: absolute; z-index: 2; left: 0; right: 39%; bottom: 0; height: 58%; background: linear-gradient(180deg, #139ec9, #087aab 62%, #075f8f); overflow: hidden; }
+.accident-scene-map__ocean > i { position: absolute; left: -7%; width: 118%; height: 28px; border-top: 5px solid rgba(255,255,255,.72); border-radius: 50%; transform: rotate(-2deg); }
+.accident-scene-map__ocean > i:nth-child(1) { top: 12%; }
+.accident-scene-map__ocean > i:nth-child(2) { top: 29%; left: -2%; }
+.accident-scene-map__ocean > i:nth-child(3) { top: 47%; }
+.accident-scene-map__ocean > i:nth-child(4) { top: 66%; left: -4%; }
+.accident-scene-map__ocean > i:nth-child(5) { top: 84%; }
+.accident-scene-map__rip { position: absolute; z-index: 3; left: 17%; bottom: 0; width: 17%; height: 52%; background: linear-gradient(180deg, rgba(4,48,79,.9), rgba(4,52,83,.15)); clip-path: polygon(18% 0, 82% 0, 100% 100%, 0 100%); }
+.accident-scene-map__rip i { position: absolute; left: 50%; width: 3px; height: 38px; background: rgba(255,255,255,.75); }
+.accident-scene-map__rip i::after { position: absolute; left: -5px; top: -1px; width: 12px; height: 12px; content: ""; border-top: 3px solid #fff; border-left: 3px solid #fff; transform: rotate(45deg); }
+.accident-scene-map__rip i:nth-child(1) { top: 19%; }
+.accident-scene-map__rip i:nth-child(2) { top: 48%; left: 38%; }
+.accident-scene-map__rip i:nth-child(3) { top: 67%; left: 63%; }
+.accident-scene-map__tsunami { position: absolute; z-index: 4; left: -2%; top: 31%; width: 24%; height: 22%; border-top: 28px solid #eafcff; border-radius: 50% 70% 20% 0; background: #0e89ba; transform: rotate(-5deg); box-shadow: inset 0 11px #21b9da; }
+.accident-scene-map__sneaker { position: absolute; z-index: 5; left: 2%; bottom: 14%; width: 27%; height: 13%; border-top: 18px solid #eafcff; border-radius: 50%; background: #0c8fbd; transform: rotate(7deg); }
+
+.accident-scene-map__sand { position: absolute; z-index: 3; right: 0; bottom: 0; width: 56%; height: 59%; background: linear-gradient(145deg, #f5d991, #d4ad62 64%, #bb8d4f); clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%, 7% 68%); }
+.accident-scene-map__shore { position: absolute; z-index: 4; left: 51%; bottom: -8%; width: 12%; height: 70%; border-left: 12px solid rgba(255,255,255,.9); border-radius: 48%; transform: rotate(10deg); }
+.accident-scene-map__cliff { position: absolute; z-index: 5; right: -2%; top: 28%; width: 21%; height: 49%; background: linear-gradient(120deg, #9b6c3e, #654126); clip-path: polygon(32% 0, 100% 9%, 100% 100%, 0 82%, 19% 58%, 5% 33%); }
+.accident-scene-map__cliff i { position: absolute; width: 4px; height: 29%; background: #3c281a; transform: rotate(24deg); }
+.accident-scene-map__cliff i:first-child { top: 18%; right: 42%; }
+.accident-scene-map__cliff i:last-child { top: 48%; right: 23%; transform: rotate(-28deg); }
+
+.accident-scene-map__pier { position: absolute; z-index: 6; left: 42%; top: 54%; width: 29%; height: 7%; background: repeating-linear-gradient(90deg, #765033 0 13px, #a67a52 14px 19px); transform: rotate(7deg); box-shadow: 0 5px rgba(62,39,25,.55); }
+.accident-scene-map__pier i { position: absolute; top: 92%; width: 7px; height: 88px; background: #5c3b28; }
+.accident-scene-map__pier i:nth-child(1) { left: 13%; }
+.accident-scene-map__pier i:nth-child(2) { left: 38%; }
+.accident-scene-map__pier i:nth-child(3) { left: 65%; }
+.accident-scene-map__pier i:nth-child(4) { left: 88%; }
+.accident-scene-map__hole { position: absolute; z-index: 6; right: 20%; bottom: 17%; width: 112px; height: 58px; border: 12px solid #c09050; border-radius: 50%; background: #4a321e; box-shadow: 0 10px 0 rgba(116,75,38,.24); }
+.accident-scene-map__umbrella { position: absolute; z-index: 6; right: 25%; top: 43%; width: 112px; height: 58px; border-radius: 112px 112px 8px 8px; background: conic-gradient(from 90deg at 50% 100%, #ff5b5b 0 22%, #ffe16c 22% 44%, #4dc7ea 44% 66%, #fff 66% 82%, #ff5b5b 82%); transform: rotate(-12deg); }
+.accident-scene-map__umbrella i { position: absolute; left: 50%; top: 53px; width: 5px; height: 92px; background: #56402c; transform: rotate(12deg); transform-origin: top; }
+.accident-scene-map__parasail { position: absolute; z-index: 5; left: 31%; top: 18%; width: 145px; height: 65px; border-radius: 145px 145px 14px 14px; background: repeating-linear-gradient(90deg, #ff6363 0 20px, #ffd45a 20px 40px, #4ec4df 40px 60px); box-shadow: inset 0 -8px rgba(0,0,0,.08); }
+.accident-scene-map__parasail::before,
+.accident-scene-map__parasail::after { position: absolute; top: 58px; width: 2px; height: 100px; content: ""; background: #4b5560; transform-origin: top; }
+.accident-scene-map__parasail::before { left: 17px; transform: rotate(-19deg); }
+.accident-scene-map__parasail::after { right: 17px; transform: rotate(19deg); }
+.accident-scene-map__parasail span { position: absolute; left: 50%; top: 135px; width: 16px; height: 29px; transform: translateX(-50%); border-radius: 50% 50% 8px 8px; background: #1b2a36; }
+
+.accident-marker { position: absolute; left: var(--marker-x); top: var(--marker-y); display: flex; align-items: center; gap: 8px; padding: 0; transform: translate(-50%, -50%); border: 0; color: #fff; background: transparent; cursor: pointer; }
+.accident-marker__pin { position: relative; display: grid; width: 52px; height: 52px; flex: 0 0 auto; place-items: center; border: 3px solid #000; border-radius: 50%; color: #000; background: #fff; box-shadow: 0 0 0 6px rgba(255,255,255,.45), 0 10px 24px rgba(0,0,0,.3); transition: transform .2s, background .2s; }
+.accident-marker__pin b { position: absolute; top: 4px; left: 4px; font-size: 8px; line-height: 1; }
+.accident-marker__pin svg { width: 21px; }
+.accident-marker strong { max-width: 132px; padding: 7px 9px; border: 2px solid #fff; border-radius: 9px; color: #fff; background: rgba(0,0,0,.84); font-size: 9px; line-height: 1.08; text-align: left; text-transform: uppercase; box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+.accident-marker:hover .accident-marker__pin,
+.accident-marker:focus-visible .accident-marker__pin { transform: scale(1.14); background: #ffe36b; }
+.accident-scene-map__hint { position: absolute; z-index: 12; top: 18px; left: 18px; padding: 10px 13px; border: 2px solid #fff; border-radius: 999px; color: #fff; background: rgba(0,0,0,.82); font-size: 9px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+
 .directory-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .directory-card {
   position: relative;
@@ -1523,6 +1612,10 @@ body::before { background: #000; }
   .scroll-companion__avatar { height: 168px; }
   .scroll-hero { grid-template-columns: 1fr; padding-right: 160px; }
   .scroll-hero__poster { min-height: 360px; }
+  .whole-map-section { width: calc(100% - 30px); padding-right: 24px; padding-left: 24px; }
+  .accident-scene-map { min-height: 650px; }
+  .accident-marker strong { display: none; }
+  .accident-marker__pin { width: 48px; height: 48px; }
   .hazard-chapter,
   .hazard-chapter--reverse { grid-template-columns: 1fr; gap: 35px; }
   .hazard-chapter--reverse .hazard-chapter__visual,
@@ -1547,6 +1640,15 @@ body::before { background: #000; }
   .scroll-heading h2,
   .hazard-chapter__copy h2 { font-size: clamp(46px, 15vw, 70px); }
   .directory-grid { grid-template-columns: 1fr; }
+  .whole-map-section { width: 100%; min-height: 760px; padding-inline: 10px; }
+  .accident-scene-map { min-height: 650px; border-radius: 24px; }
+  .accident-scene-map__sun { width: 58px; height: 58px; }
+  .accident-scene-map__parasail { transform: scale(.72); transform-origin: top left; }
+  .accident-scene-map__umbrella { transform: rotate(-12deg) scale(.72); transform-origin: top left; }
+  .accident-scene-map__hole { transform: scale(.72); transform-origin: center; }
+  .accident-marker__pin { width: 42px; height: 42px; border-width: 2px; box-shadow: 0 0 0 4px rgba(255,255,255,.48), 0 8px 18px rgba(0,0,0,.28); }
+  .accident-marker__pin svg { width: 17px; }
+  .accident-marker__pin b { top: 3px; left: 3px; font-size: 7px; }
   .directory-card { min-height: 116px; }
   .hazard-chapter { padding-top: 102px; }
   .hazard-chapter__visual { min-height: 430px; }

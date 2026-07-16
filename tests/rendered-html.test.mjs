@@ -85,11 +85,24 @@ test("provides long-scroll jump navigation and reveal interactions", async () =>
   assert.match(app, /data-scroll-section/);
   assert.match(app, /Jump into the guide/i);
   assert.match(app, /Jump to a hazard/i);
-  assert.match(app, /Reveal the calm move/i);
+  assert.match(app, /Safe action/i);
   assert.match(app, /aria-expanded/);
   assert.match(app, /aria-current/);
-  assert.match(app, /BeachMap/);
+  assert.match(app, /AccidentSceneMap/);
   assert.doesNotMatch(app, /Scout is watching|SCOUT’S SCAN/i);
+  assert.doesNotMatch(app, /Why it matters|Calm move revealed|Your sixty-second safety check|END OF FIELD GUIDE|Review the directory|Start again/i);
+});
+
+test("shows all nine accidents on one clickable illustrated map", async () => {
+  const map = await readProjectFile("src/components/AccidentSceneMap.tsx");
+  assert.match(map, /hazards\.map/);
+  assert.match(map, /markerPositions/);
+  assert.match(map, /onClick=\{\(\) => onJump\(`story-\$\{hazard\.id\}`\)\}/);
+  assert.match(map, /accident-scene-map__ocean/);
+  assert.match(map, /accident-scene-map__sand/);
+  assert.match(map, /accident-scene-map__cliff/);
+  assert.match(map, /accident-scene-map__pier/);
+  assert.match(map, /accident-scene-map__parasail/);
 });
 
 test("renders a procedural 3D guide with expressive face and gestures", async () => {
