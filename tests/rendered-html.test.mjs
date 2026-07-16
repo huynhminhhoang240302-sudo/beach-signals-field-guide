@@ -9,10 +9,18 @@ async function render() {
   const workerUrl = projectFile("dist/server/index.js");
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
+  const indexHtml = await readProjectFile("dist/client/index.html");
 
   return worker.fetch(
     new Request("http://localhost/", { headers: { accept: "text/html" } }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    {
+      ASSETS: {
+        fetch: async (request) =>
+          new URL(request.url).pathname === "/index.html"
+            ? new Response(indexHtml, { headers: { "content-type": "text/html; charset=UTF-8" } })
+            : new Response("Not found", { status: 404 }),
+      },
+    },
     { waitUntil() {}, passThroughOnException() {} },
   );
 }
