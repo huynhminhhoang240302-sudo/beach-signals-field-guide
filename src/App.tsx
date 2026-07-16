@@ -126,21 +126,8 @@ function Companion({ activeId }: { activeId: string }) {
   const reaction = (activeHazard?.mascotReaction ??
     (activeId === "finish" ? "relieved" : activeId === "safety" ? "confident" : "neutral")) as GuideReaction;
 
-  const message = activeHazard
-    ? activeHazard.visual?.warningSign ?? activeHazard.shortDescription
-    : activeId === "directory"
-      ? "Choose any signal and jump straight into its field note."
-      : activeId === "beach-map"
-        ? "Scan the water, sky, structures and land before you settle in."
-        : activeId === "safety"
-          ? "Pack all six habits. Small checks prevent big surprises."
-          : activeId === "finish"
-            ? "You are coast-ready. Look first, then step in."
-            : "I’ll stay with you while you read the coast.";
-
   return (
-    <aside className="scroll-companion" aria-label="Scout, your 3D beach-safety guide">
-      <div className="scroll-companion__status"><i /> Scout is watching</div>
+    <aside className="scroll-companion" aria-label="Expressive 3D beach-safety guide">
       <div className="scroll-companion__avatar">
         <GuideAvatar3D
           reaction={reaction}
@@ -148,10 +135,6 @@ function Companion({ activeId }: { activeId: string }) {
           compact
           label={`Scout, the expressive 3D guide, reacting ${reaction.replaceAll("-", " ")}`}
         />
-      </div>
-      <div className="scroll-companion__bubble">
-        <strong>{activeHazard?.title ?? "Your guide"}</strong>
-        <p>{message}</p>
       </div>
     </aside>
   );
@@ -193,9 +176,6 @@ function HazardStory({
       <article className="hazard-chapter__copy">
         <p className="mono-kicker">FIELD NOTE / {String(index + 1).padStart(2, "0")}</p>
         <h2>{hazard.title}</h2>
-        <blockquote>{hazard.cinematicOpening}</blockquote>
-        <p className="hazard-chapter__summary">{hazard.shortDescription}</p>
-
         <div className="hazard-chapter__why">
           <span>Why it matters</span>
           <p>{hazard.dangerExplanation}</p>
@@ -316,8 +296,7 @@ export default function App() {
               <p className="mono-kicker">A LONG-FORM INTERACTIVE SAFETY PRESENTATION</p>
               <h1>Read the coast.<br /><span>Then step in.</span></h1>
               <p>
-                Nine ordinary-looking beach scenes can change in seconds. Scroll the story,
-                jump straight into any field note, and reveal the calm move that matters.
+                Nine hazards. One clear signal and one safe move for each.
               </p>
               <div className="scroll-hero__actions">
                 <button className="bw-button bw-button--light" type="button" onClick={() => jumpTo("directory")}>
@@ -339,8 +318,8 @@ export default function App() {
           <SectionShell id="directory" className="directory-section" label="Hazard directory">
             <div className="scroll-heading">
               <p className="mono-kicker"><BookOpen aria-hidden="true" /> CLICK-TO-JUMP DIRECTORY</p>
-              <h2>Choose a signal.<br /><span>Jump right in.</span></h2>
-              <p>Read in order or skip directly to the scene you want. Every field note is one full chapter down the page.</p>
+              <h2>Pick a hazard.<br /><span>Jump in.</span></h2>
+              <p>Scroll in order or choose any scene.</p>
             </div>
             <div className="directory-grid">
               {directoryItems.map(({ hazard, index, target }) => (
@@ -348,7 +327,6 @@ export default function App() {
                   <HazardVisual sceneType={hazard.sceneType} decorative />
                   <span className="directory-card__number">{String(index + 1).padStart(2, "0")}</span>
                   <strong>{hazard.title}</strong>
-                  <small>{hazard.visual?.warningSign}</small>
                   <ArrowDown aria-hidden="true" />
                 </button>
               ))}
@@ -371,14 +349,14 @@ export default function App() {
                 <p className="mono-kicker"><MapPinned aria-hidden="true" /> JUMP-IN PRACTICE</p>
                 <h2>Read the whole beach.</h2>
               </div>
-              <p>Click a marker. Start with the flag, then scan the water, sky, structures and land.</p>
+              <p>Click a marker and spot the clue.</p>
             </div>
             <div className="practice-layout">
-              <BeachMap className="monochrome-map" onSelect={setMapHotspot} />
+              <BeachMap className="illustrated-map" onSelect={setMapHotspot} />
               <aside className="practice-readout" aria-live="polite">
-                <span>{mapHotspot ? "SIGNAL IDENTIFIED" : "SCOUT’S SCAN"}</span>
+                <span>{mapHotspot ? "SIGNAL IDENTIFIED" : "SCAN THE BEACH"}</span>
                 <h3>{mapHotspot?.title ?? "What changed?"}</h3>
-                <p>{mapHotspot?.description ?? "Choose a marker and read the clue before you choose where to swim or sit."}</p>
+                <p>{mapHotspot?.description ?? "Choose a marker."}</p>
                 <button type="button" onClick={() => jumpTo("safety")}>Continue to the safety check <ArrowDown aria-hidden="true" /></button>
               </aside>
             </div>
@@ -390,7 +368,7 @@ export default function App() {
                 <p className="mono-kicker"><ShieldCheck aria-hidden="true" /> TAP TO PACK EACH HABIT</p>
                 <h2>Your sixty-second safety check.</h2>
               </div>
-              <p>{checkedHabits.length} of {safetyPrinciples.length} packed. Tap every habit to build a calm coast-ready routine.</p>
+              <p>{checkedHabits.length} of {safetyPrinciples.length} packed.</p>
             </div>
             <div className="safety-grid">
               {safetyPrinciples.map((principle, index) => {
@@ -424,7 +402,7 @@ export default function App() {
           <SectionShell id="finish" className="finish-section" label="Presentation complete">
             <p className="mono-kicker">END OF FIELD GUIDE / START OF A SAFER BEACH DAY</p>
             <h2>Look first.<br /><span>Then step in.</span></h2>
-            <p>A safer day is not about memorizing fear. Notice change early, give hazards space, and choose the easy safe action.</p>
+            <p>Notice change early. Give hazards space. Choose the safe move.</p>
             <div className="finish-actions">
               <button className="bw-button bw-button--light" type="button" onClick={() => jumpTo("directory")}>
                 Review the directory <BookOpen aria-hidden="true" />
@@ -437,8 +415,7 @@ export default function App() {
         </main>
 
         <footer className="scroll-footer">
-          <span>Beach/Signals — an educational field guide.</span>
-          <span>Follow local lifeguards, warnings and emergency services.</span>
+          <span>Beach/Signals — follow local warnings and lifeguards.</span>
         </footer>
       </div>
     </MotionConfig>

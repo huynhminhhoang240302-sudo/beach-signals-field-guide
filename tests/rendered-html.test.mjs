@@ -74,7 +74,7 @@ test("uses Comic Sans throughout a full-height long-scroll presentation", async 
   assert.match(css, /scroll-section/i);
   assert.match(css, /scroll-snap|scroll-behavior/i);
   assert.match(css, /--bw-black\s*:\s*#000000/i);
-  assert.match(css, /filter\s*:\s*grayscale/i);
+  assert.doesNotMatch(css, /filter\s*:\s*grayscale/i);
 });
 
 test("provides long-scroll jump navigation and reveal interactions", async () => {
@@ -89,6 +89,7 @@ test("provides long-scroll jump navigation and reveal interactions", async () =>
   assert.match(app, /aria-expanded/);
   assert.match(app, /aria-current/);
   assert.match(app, /BeachMap/);
+  assert.doesNotMatch(app, /Scout is watching|SCOUT’S SCAN/i);
 });
 
 test("renders a procedural 3D guide with expressive face and gestures", async () => {
