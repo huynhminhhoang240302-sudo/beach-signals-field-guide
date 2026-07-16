@@ -85,10 +85,12 @@ test("provides long-scroll jump navigation and a return to the map", async () =>
   assert.match(app, /data-scroll-section/);
   assert.match(app, /Jump into the guide/i);
   assert.match(app, /Jump to a hazard/i);
-  assert.match(app, /Back to map/i);
+  assert.match(app, /aria-label="Back to map"/i);
+  assert.match(app, /<MapIcon aria-hidden="true"/i);
+  assert.doesNotMatch(app, />\s*Back to map\s*</i);
   assert.match(app, /aria-current/);
   assert.match(app, /AccidentSceneMap/);
-  assert.doesNotMatch(app, /GuideAvatar3D|scroll-companion|Safe action|Next field note|FIELD NOTE \/|Scout is watching|SCOUT’S SCAN/i);
+  assert.doesNotMatch(app, /Do this|Signal to notice|hazard-chapter__signal|GuideAvatar3D|scroll-companion|Safe action|Next field note|FIELD NOTE \/|Scout is watching|SCOUT’S SCAN/i);
   assert.doesNotMatch(app, /Why it matters|Calm move revealed|Your sixty-second safety check|END OF FIELD GUIDE|Review the directory|Start again/i);
 });
 

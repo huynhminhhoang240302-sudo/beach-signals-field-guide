@@ -4,14 +4,13 @@ import { useEffect, useState, type ReactNode } from "react";
 import { MotionConfig, motion, useScroll, useSpring } from "framer-motion";
 import {
   ArrowDown,
-  ArrowLeft,
   ArrowRight,
   BadgeCheck,
   Check,
   CloudLightning,
-  Eye,
   Flag,
   LifeBuoy,
+  Map as MapIcon,
   Mountain,
   ShieldCheck,
   Waves,
@@ -115,13 +114,6 @@ function HazardStory({
     >
       <div className="hazard-chapter__visual">
         <HazardVisual sceneType={hazard.sceneType} label={hazard.visual?.sceneDescription} />
-        <div className="hazard-chapter__signal">
-          <Eye aria-hidden="true" />
-          <div>
-            <span>Signal to notice</span>
-            <strong>{hazard.visual?.warningSign ?? hazard.shortDescription}</strong>
-          </div>
-        </div>
       </div>
 
       <article className="hazard-chapter__copy">
@@ -130,13 +122,16 @@ function HazardStory({
           id={`${hazard.id}-action`}
           className="calm-move is-visible"
         >
-          <span>Do this</span>
           <p>{hazard.safetyAction}</p>
         </div>
 
-        <button className="back-to-map" type="button" onClick={() => jumpTo("directory")}>
-          <ArrowLeft aria-hidden="true" />
-          Back to map
+        <button
+          className="back-to-map"
+          type="button"
+          onClick={() => jumpTo("directory")}
+          aria-label="Back to map"
+        >
+          <MapIcon aria-hidden="true" />
         </button>
       </article>
     </SectionShell>
