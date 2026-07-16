@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -39,6 +39,7 @@ const wrangler = {
   },
 };
 
+await rm(serverDirectory, { recursive: true, force: true });
 await mkdir(serverDirectory, { recursive: true });
 await mkdir(dirname(hostingTarget), { recursive: true });
 await writeFile(resolve(serverDirectory, "index.js"), worker, "utf8");
