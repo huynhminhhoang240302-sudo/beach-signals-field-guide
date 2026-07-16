@@ -44,8 +44,8 @@ type ArmPose = { shoulder: number; elbow: number };
 
 const CHARCOAL = "#171c24";
 const DEEP_CHARCOAL = "#080c12";
-const OCEAN_BLUE = "#16ace5";
-const PALE_BLUE = "#bcecff";
+const OCEAN_BLUE = "#d9dde1";
+const PALE_BLUE = "#ffffff";
 
 const ARM_POSES: Record<
   GuideGesture,

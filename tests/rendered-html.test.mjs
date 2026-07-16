@@ -59,7 +59,7 @@ test("keeps all nine hazards typed, local, and free of starter artifacts", async
   await assert.rejects(access(projectFile("app/_sites-preview")));
 });
 
-test("uses Comic Sans throughout a viewport-sized presentation layout", async () => {
+test("uses Comic Sans throughout a full-height long-scroll presentation", async () => {
   const css = await readProjectFile("app/globals.css");
   const universalComicSans = /\*\s*\{[^}]*font-family\s*:\s*[^;}]*Comic Sans/is.test(css);
   const sharedComicSansVariables =
@@ -71,27 +71,24 @@ test("uses Comic Sans throughout a viewport-sized presentation layout", async ()
     "the global and display type must both resolve to Comic Sans",
   );
   assert.match(css, /(?:100svh|100dvh|100vh)/i);
-  assert.match(css, /presentation/i);
-  assert.match(css, /overflow\s*:\s*hidden/i);
+  assert.match(css, /scroll-section/i);
+  assert.match(css, /scroll-snap|scroll-behavior/i);
+  assert.match(css, /--bw-black\s*:\s*#000000/i);
+  assert.match(css, /filter\s*:\s*grayscale/i);
 });
 
-test("provides click, keyboard, dot, and swipe presentation navigation", async () => {
-  const [app, controls, navigation] = await Promise.all([
-    readProjectFile("src/App.tsx"),
-    readProjectFile("src/components/PresentationControls.tsx"),
-    readProjectFile("src/hooks/usePresentationNavigation.ts"),
-  ]);
-  const source = `${app}\n${controls}\n${navigation}`;
+test("provides long-scroll jump navigation and reveal interactions", async () => {
+  const app = await readProjectFile("src/App.tsx");
 
-  assert.match(source, /(?:currentSlide|activeSlide|slideIndex)/i);
-  assert.match(source, /(?:Previous|Prev)[^\n]{0,100}(?:slide|onClick)|aria-label=[^\n]{0,80}(?:Previous|Prev)/i);
-  assert.match(source, /Next[^\n]{0,100}(?:slide|onClick)|aria-label=[^\n]{0,80}Next/i);
-  assert.match(source, /(?:Go to|Jump to)[^\n]{0,80}slide|aria-current/i);
-  assert.match(source, /ArrowLeft/);
-  assert.match(source, /ArrowRight/);
-  assert.match(source, /\bHome\b/);
-  assert.match(source, /\bEnd\b/);
-  assert.match(source, /(?:touch|swipe|pointer)/i);
+  assert.match(app, /scrollIntoView/);
+  assert.match(app, /IntersectionObserver/);
+  assert.match(app, /data-scroll-section/);
+  assert.match(app, /Jump into the guide/i);
+  assert.match(app, /Jump to a hazard/i);
+  assert.match(app, /Reveal the calm move/i);
+  assert.match(app, /aria-expanded/);
+  assert.match(app, /aria-current/);
+  assert.match(app, /BeachMap/);
 });
 
 test("renders a procedural 3D guide with expressive face and gestures", async () => {

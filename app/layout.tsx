@@ -9,11 +9,13 @@ export const metadata: Metadata = {
     title: "Beach/Signals — Meet the Coast Before You Step In",
     description: "Explore nine beach hazards with an expressive 3D safety guide.",
     type: "website",
+    images: ["https://beach-signals-field-guide.hoangfffff.chatgpt.site/og-monochrome.png"],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Beach/Signals",
     description: "Read the coast. Enjoy it safely.",
+    images: ["https://beach-signals-field-guide.hoangfffff.chatgpt.site/og-monochrome.png"],
   },
 };
 
