@@ -2,8 +2,11 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
+const projectFile = (path) => new URL(`../${path}`, import.meta.url);
+const readProjectFile = (path) => readFile(projectFile(path), "utf8");
+
 async function render() {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+  const workerUrl = projectFile("dist/server/index.js");
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
@@ -14,25 +17,25 @@ async function render() {
   );
 }
 
-test("server-renders the complete Beach/Signals field guide", async () => {
+test("server-renders the Beach/Signals presentation shell", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
   assert.match(html, /<title>Beach\/Signals/i);
-  assert.match(html, /The beach is/i);
-  assert.match(html, /Nine dangers/i);
-  assert.match(html, /Respect the Beach/i);
-  assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Lorem Ipsum/i);
+  assert.match(html, /Beach\/Signals/i);
+  assert.match(html, /(?:interactive|presentation|slide)/i);
+  assert.match(html, /(?:Start|Next)/i);
+  assert.doesNotMatch(html, /mascot\.webp|codex-preview|react-loading-skeleton|Lorem Ipsum/i);
 });
 
-test("keeps content typed, local and free of starter artifacts", async () => {
+test("keeps all nine hazards typed, local, and free of starter artifacts", async () => {
   const [hazards, page, layout, packageJson] = await Promise.all([
-    readFile(new URL("../src/data/hazards.ts", import.meta.url), "utf8"),
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../package.json", import.meta.url), "utf8"),
+    readProjectFile("src/data/hazards.ts"),
+    readProjectFile("app/page.tsx"),
+    readProjectFile("app/layout.tsx"),
+    readProjectFile("package.json"),
   ]);
 
   const hazardIds = hazards.match(/\n\s+id: "[^"]+"/g) ?? [];
@@ -41,7 +44,66 @@ test("keeps content typed, local and free of starter artifacts", async () => {
   assert.match(layout, /Beach\/Signals/);
   assert.match(packageJson, /"@react-three\/fiber"/);
   assert.match(packageJson, /"framer-motion"/);
-  assert.doesNotMatch(page + layout + packageJson, /_sites-preview|react-loading-skeleton|Starter Project/);
-  await access(new URL("../public/mascot.webp", import.meta.url));
-  await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
+  assert.doesNotMatch(
+    page + layout + packageJson,
+    /mascot\.webp|_sites-preview|react-loading-skeleton|Starter Project/,
+  );
+  await assert.rejects(access(projectFile("app/_sites-preview")));
+});
+
+test("uses Comic Sans throughout a viewport-sized presentation layout", async () => {
+  const css = await readProjectFile("app/globals.css");
+  const universalComicSans = /\*\s*\{[^}]*font-family\s*:\s*[^;}]*Comic Sans/is.test(css);
+  const sharedComicSansVariables =
+    /--display\s*:\s*[^;]*Comic Sans/i.test(css) &&
+    /--body\s*:\s*[^;]*Comic Sans/i.test(css);
+
+  assert.ok(
+    universalComicSans || sharedComicSansVariables,
+    "the global and display type must both resolve to Comic Sans",
+  );
+  assert.match(css, /(?:100svh|100dvh|100vh)/i);
+  assert.match(css, /presentation/i);
+  assert.match(css, /overflow\s*:\s*hidden/i);
+});
+
+test("provides click, keyboard, dot, and swipe presentation navigation", async () => {
+  const [app, controls, navigation] = await Promise.all([
+    readProjectFile("src/App.tsx"),
+    readProjectFile("src/components/PresentationControls.tsx"),
+    readProjectFile("src/hooks/usePresentationNavigation.ts"),
+  ]);
+  const source = `${app}\n${controls}\n${navigation}`;
+
+  assert.match(source, /(?:currentSlide|activeSlide|slideIndex)/i);
+  assert.match(source, /(?:Previous|Prev)[^\n]{0,100}(?:slide|onClick)|aria-label=[^\n]{0,80}(?:Previous|Prev)/i);
+  assert.match(source, /Next[^\n]{0,100}(?:slide|onClick)|aria-label=[^\n]{0,80}Next/i);
+  assert.match(source, /(?:Go to|Jump to)[^\n]{0,80}slide|aria-current/i);
+  assert.match(source, /ArrowLeft/);
+  assert.match(source, /ArrowRight/);
+  assert.match(source, /\bHome\b/);
+  assert.match(source, /\bEnd\b/);
+  assert.match(source, /(?:touch|swipe|pointer)/i);
+});
+
+test("renders a procedural 3D guide with expressive face and gestures", async () => {
+  const [app, guide] = await Promise.all([
+    readProjectFile("src/App.tsx"),
+    readProjectFile("src/components/GuideAvatar3D.tsx"),
+  ]);
+
+  assert.match(app, /GuideAvatar3D/);
+  assert.doesNotMatch(app, /mascot\.webp|<AvatarGuide\b|<HeroScene\b/i);
+  assert.match(guide, /@react-three\/fiber/);
+  assert.match(guide, /<Canvas\b/);
+  assert.match(guide, /<mesh\b|Geometry\b/);
+  assert.match(guide, /eye/i);
+  assert.match(guide, /brow/i);
+  assert.match(guide, /mouth/i);
+  assert.match(guide, /reaction|expression/i);
+  assert.match(guide, /gesture|point/i);
+  assert.doesNotMatch(
+    guide,
+    /mascot\.webp|useTexture|TextureLoader|#c89a3c|#f0ca72|<img\b/i,
+  );
 });

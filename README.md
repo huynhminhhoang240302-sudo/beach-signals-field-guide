@@ -1,6 +1,6 @@
 # Beach/Signals
 
-A responsive, single-page interactive field guide to nine hidden beach hazards. The experience combines a lightweight React interface, a Three.js hero scene, CSS-built hazard miniatures, and the supplied black-and-gold puzzle-piece mascot.
+A responsive, single-page beach-safety presentation. Fourteen click-through slides combine a procedural 3D guide, nine CSS-built hazard miniatures, an interactive shoreline map and a tappable safety checklist. The interface uses Comic Sans throughout.
 
 ## Run locally
 
@@ -18,58 +18,57 @@ Open the local URL printed by the development server (normally `http://localhost
 ```bash
 npx tsc --noEmit
 npm run lint
-npm run build
-npm run start
+npm run test
 ```
 
-`npm run build` creates the production output in `dist/`.
+`npm run test` creates the production output in `dist/` and checks the rendered presentation shell, interaction affordances, typography, avatar implementation and local hazard data.
+
+## Presentation controls
+
+- Click **Start presentation**, **Previous**, **Next**, any progress dot or a hazard in the index.
+- Use Left/Right or Page Up/Page Down to move one slide.
+- Use Home/End to jump to the first or last slide.
+- Swipe horizontally on touch screens. Interactive map markers and checklist cards are excluded from slide swipes so they remain easy to use.
+- On a narrow or short screen, the current slide scrolls inside the presentation frame while the navigation controls remain visible.
 
 ## Project map
 
 ```text
 app/
-  globals.css            Visual system, responsive rules and CSS scenes
-  layout.tsx             Site metadata and root document
-  page.tsx               App entry
+  globals.css                       Comic Sans visual system, presentation layout and CSS scenes
+  layout.tsx                        Site metadata and root document
+  page.tsx                          App entry
 src/
   components/
-    AvatarGuide.tsx      Reusable framing for the supplied mascot
-    HeroScene.tsx        React Three Fiber hero and WebGL fallback
-    HazardOrbit.tsx      Desktop orbit and mobile swipe rail
-    HazardCard.tsx       Selected-hazard summary
-    HazardSection.tsx    Cinematic field-note layout
-    HazardVisual.tsx     Nine CSS-only miniature scenes
-    BeachMap.tsx         Keyboard-accessible warning-sign hotspots
-    SafetyChecklist.tsx  Six large safety-principle tiles
-    FooterScene.tsx      Sunset closing scene
+    GuideAvatar3D.tsx               Procedural expressive 3D guide and WebGL fallback
+    PresentationControls.tsx        Accessible previous/next controls and slide dots
+    HazardVisual.tsx                Nine CSS-only miniature scenes
+    BeachMap.tsx                    Keyboard-accessible warning-sign hotspots
   data/
-    hazards.ts           Typed local content for all nine hazards
-  hooks/                 Motion, viewport and tab-visibility helpers
-  App.tsx                Single-page composition and navigation
-public/
-  mascot.webp            Optimized source mascot artwork
+    hazards.ts                      Typed local content for all nine hazards
+  hooks/
+    usePresentationNavigation.ts    Keyboard, click and touch-swipe navigation
+  App.tsx                           Fourteen-slide presentation composition
+tests/
+  rendered-html.test.mjs            Production render and presentation invariants
 ```
 
-## Updating the content
+## 3D guide
 
-Edit `src/data/hazards.ts`. Each hazard includes its title, short description, danger explanation, immediate safety action, icon, scene type, mascot reaction and accent color. The orbit and all nine story sections read from this one typed file.
+Scout is built entirely from React Three Fiber and Three.js geometry. The guide has a charcoal puzzle-piece body, blue accents, visible eyes and pupils, articulated eyebrows, multiple mouth shapes, arms, hands and legs. Reactions and gestures change by slide: wave, point, warn, move away and celebrate. No raster mascot texture, gold side piece or logo is rendered.
 
-## Replacing or updating the mascot
+The canvas caps device pixel ratio, pauses when the page is hidden, honors reduced motion and falls back to a CSS-built character if WebGL is unavailable.
 
-1. Export the approved mascot as a high-quality, roughly square WebP file.
-2. Replace `public/mascot.webp` without changing the filename.
-3. Keep the recognizable black puzzle-piece body, gold side section, sunglasses, gold X, limbs and original proportions.
-4. Do not add text to the image. The current source had a narrow headline at the top, so `HeroScene.tsx` deliberately samples the lower 91% and the CSS guide frames mask the same strip. If a future source is already a clean cutout, change `MASCOT_VISIBLE_HEIGHT` in `HeroScene.tsx` to `1` and remove the top mask in `.avatar-guide__frame::after`.
-5. Run the validation and production build commands above.
+## Updating content
 
-## Accessibility and performance
+Edit `src/data/hazards.ts`. Each hazard contains its title, short description, danger explanation, immediate safety action, scene type, guide reaction and accent color. The hazard index and all nine lesson slides read from this typed source.
 
-- All hazard guidance is available as semantic text outside the 3D canvas.
-- The orbit, map, menu and calls to action are keyboard accessible with visible focus states.
-- The map supports Tab plus Arrow, Home and End keys.
-- `prefers-reduced-motion` disables ambient motion and uses simple state changes.
-- Mobile replaces the 3D hero with a lightweight 2.5D mascot layer and changes the orbit into a swipeable rail.
-- The Three.js scene is lazy-loaded, caps device pixel ratio, stops rendering when the tab is hidden and provides a WebGL fallback.
-- The supplied mascot is served as an optimized WebP asset.
+## Accessibility
 
-The guide is educational and intentionally non-graphic. Local flags, lifeguards, posted closures and emergency services always take priority.
+- Every canvas has a descriptive label and all safety guidance remains semantic text outside WebGL.
+- Presentation controls expose live slide status, disabled boundary states and named progress dots.
+- Map markers support Tab plus Arrow, Home and End keys.
+- Interactive targets have visible focus states; global slide shortcuts ignore form and button interactions.
+- Reduced-motion preferences collapse presentation and ambient animation.
+
+The presentation is educational and intentionally non-graphic. Local flags, lifeguards, posted closures and emergency services always take priority.

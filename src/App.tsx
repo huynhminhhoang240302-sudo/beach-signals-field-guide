@@ -1,122 +1,467 @@
 "use client";
 
-import { lazy, Suspense, useState } from "react";
-import { MotionConfig, motion, useScroll, useSpring } from "framer-motion";
-import { ArrowDown, ArrowRight, Menu, ShieldCheck, Sparkles, X } from "lucide-react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
+import {
+  ArrowRight,
+  BadgeCheck,
+  BookOpen,
+  Check,
+  CloudLightning,
+  Eye,
+  Flag,
+  Keyboard,
+  LifeBuoy,
+  MapPinned,
+  Mountain,
+  RotateCcw,
+  ShieldCheck,
+  Sparkles,
+  Waves,
+} from "lucide-react";
 import { hazards } from "@/src/data/hazards";
-import { useMediaQuery } from "./hooks/useMediaQuery";
-import AvatarGuide from "./components/AvatarGuide";
 import BeachMap, { type BeachHotspot } from "./components/BeachMap";
-import FooterScene from "./components/FooterScene";
-import HazardOrbit from "./components/HazardOrbit";
-import HazardSection from "./components/HazardSection";
-import SafetyChecklist from "./components/SafetyChecklist";
+import GuideAvatar3D, {
+  type GuideGesture,
+  type GuideReaction,
+} from "./components/GuideAvatar3D";
+import HazardVisual from "./components/HazardVisual";
+import PresentationControls from "./components/PresentationControls";
+import { usePresentationNavigation } from "./hooks/usePresentationNavigation";
 
-const HeroScene = lazy(() => import("./components/HeroScene"));
+const INTRO_SLIDES = 2;
+const MAP_SLIDE = INTRO_SLIDES + hazards.length;
+const HABITS_SLIDE = MAP_SLIDE + 1;
+const CLOSING_SLIDE = HABITS_SLIDE + 1;
+
+const slideLabels = [
+  "Welcome",
+  "Choose a signal",
+  ...hazards.map((hazard) => hazard.title),
+  "Read a beach",
+  "Six calm habits",
+  "Ready for the coast",
+] as const;
+
+const safetyPrinciples = [
+  {
+    title: "Check local warnings",
+    detail: "Read flags, posted notices and the day’s forecast before settling in.",
+    icon: Flag,
+  },
+  {
+    title: "Swim near lifeguards",
+    detail: "Choose a watched area and stay inside the marked swimming zone.",
+    icon: LifeBuoy,
+  },
+  {
+    title: "Keep sand holes shallow",
+    detail: "Dig only shallow holes, supervise children and fill every hole before leaving.",
+    icon: Waves,
+  },
+  {
+    title: "Give cliffs space",
+    detail: "Stay back from bluff edges and away from the base of crumbling slopes.",
+    icon: Mountain,
+  },
+  {
+    title: "Leave when thunder starts",
+    detail: "Move into a substantial enclosed building or hard-topped vehicle.",
+    icon: CloudLightning,
+  },
+  {
+    title: "Use licensed operators",
+    detail: "Check the crew, weather policy and safety equipment before an activity.",
+    icon: BadgeCheck,
+  },
+] as const;
+
+const guideGestureByReaction: Record<GuideReaction, GuideGesture> = {
+  neutral: "wave",
+  confident: "point-right",
+  "confident-pointing": "point-right",
+  worried: "warning",
+  warning: "warning",
+  surprised: "warning",
+  "moving-away": "point-left",
+  relieved: "celebrate",
+};
+
+type AccentStyle = CSSProperties & { "--slide-accent": string };
+
+function GuidePanel({
+  reaction,
+  gesture,
+  eyebrow,
+  title,
+  children,
+  compact = true,
+}: {
+  reaction: GuideReaction;
+  gesture?: GuideGesture;
+  eyebrow: string;
+  title: string;
+  children: ReactNode;
+  compact?: boolean;
+}) {
+  return (
+    <aside className="guide-panel" aria-label="Scout’s guidance">
+      <div className="guide-panel__avatar">
+        <GuideAvatar3D
+          reaction={reaction}
+          gesture={gesture ?? guideGestureByReaction[reaction]}
+          compact={compact}
+          label={`Scout, the expressive 3D beach guide, ${reaction.replaceAll("-", " ")}`}
+        />
+      </div>
+      <div className="guide-panel__message">
+        <p>{eyebrow}</p>
+        <h3>{title}</h3>
+        <div>{children}</div>
+      </div>
+    </aside>
+  );
+}
+
+function CoverSlide({ onStart }: { onStart: () => void }) {
+  return (
+    <div className="cover-slide">
+      <div className="cover-slide__copy">
+        <p className="slide-kicker"><Sparkles aria-hidden="true" /> Interactive beach safety presentation</p>
+        <h1 id="slide-title-0">Meet the coast <span>before you step in.</span></h1>
+        <p className="cover-slide__lead">
+          Nine ordinary-looking beach scenes can change in seconds. Scout, your expressive 3D guide,
+          will show you the clue to notice and the calm move to make.
+        </p>
+        <div className="cover-slide__actions">
+          <button className="deck-button deck-button--primary" type="button" onClick={onStart}>
+            Start presentation <ArrowRight aria-hidden="true" />
+          </button>
+          <span><Keyboard aria-hidden="true" /> Use arrow keys, click, or swipe</span>
+        </div>
+        <dl className="cover-slide__stats">
+          <div><dt>09</dt><dd>hidden hazards</dd></div>
+          <div><dt>06</dt><dd>calm habits</dd></div>
+          <div><dt>01</dt><dd>guide beside you</dd></div>
+        </dl>
+      </div>
+
+      <div className="cover-slide__guide" aria-label="Meet Scout, the presentation guide">
+        <div className="cover-slide__orbit" aria-hidden="true"><i /><i /><i /></div>
+        <GuideAvatar3D
+          reaction="confident"
+          gesture="wave"
+          label="Scout, a charcoal-black 3D puzzle-shaped beach guide, waving hello"
+        />
+        <div className="cover-slide__bubble">
+          <span>Guide online</span>
+          <strong>Hi, I’m Scout!</strong>
+          <p>I’ll change expression and point out the signal that matters on every slide.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HazardIndexSlide({ onChoose }: { onChoose: (hazardIndex: number) => void }) {
+  return (
+    <div className="index-slide">
+      <div className="slide-heading slide-heading--row">
+        <div>
+          <p className="slide-kicker"><BookOpen aria-hidden="true" /> Click-interactive hazard index</p>
+          <h2 id="slide-title-1">Nine signals. <span>Choose one.</span></h2>
+        </div>
+        <p>Pick any scene to jump there, or keep moving in order with the controls below.</p>
+      </div>
+
+      <div className="index-slide__layout">
+        <div className="hazard-index" aria-label="Choose a beach hazard">
+          {hazards.map((hazard, index) => (
+            <button
+              className="hazard-index__item"
+              type="button"
+              key={hazard.id}
+              onClick={() => onChoose(index)}
+              style={{ "--slide-accent": hazard.accentColor } as AccentStyle}
+            >
+              <HazardVisual sceneType={hazard.sceneType} decorative />
+              <span className="hazard-index__number">{String(index + 1).padStart(2, "0")}</span>
+              <span className="hazard-index__title">{hazard.title}</span>
+              <ArrowRight aria-hidden="true" />
+            </button>
+          ))}
+        </div>
+
+        <GuidePanel
+          reaction="confident-pointing"
+          gesture="point-left"
+          eyebrow="Scout says"
+          title="Curiosity first."
+        >
+          <p>Nothing here is graphic. Each scene teaches one visual clue and one action worth remembering.</p>
+        </GuidePanel>
+      </div>
+    </div>
+  );
+}
+
+function HazardSlide({
+  hazardIndex,
+  onBackToIndex,
+}: {
+  hazardIndex: number;
+  onBackToIndex: () => void;
+}) {
+  const hazard = hazards[hazardIndex];
+  const reaction = hazard.mascotReaction as GuideReaction;
+  const warningSign = hazard.visual?.warningSign ?? hazard.shortDescription;
+
+  return (
+    <div
+      className="hazard-slide"
+      style={{ "--slide-accent": hazard.accentColor } as AccentStyle}
+    >
+      <div className="hazard-slide__visual-column">
+        <div className="hazard-slide__number">FIELD NOTE {String(hazardIndex + 1).padStart(2, "0")}</div>
+        <HazardVisual
+          sceneType={hazard.sceneType}
+          label={hazard.visual?.sceneDescription}
+        />
+        <div className="hazard-slide__signal">
+          <Eye aria-hidden="true" />
+          <div><span>Signal to notice</span><strong>{warningSign}</strong></div>
+        </div>
+      </div>
+
+      <article className="hazard-slide__lesson">
+        <button className="text-button" type="button" onClick={onBackToIndex}>← Hazard index</button>
+        <p className="slide-kicker">{hazard.visual?.eyebrow ?? "Beach signal"}</p>
+        <h2 id={`slide-title-${hazardIndex + INTRO_SLIDES}`}>{hazard.title}</h2>
+        <blockquote>{hazard.cinematicOpening}</blockquote>
+
+        <div className="lesson-card">
+          <span>Why it matters</span>
+          <p>{hazard.dangerExplanation}</p>
+        </div>
+        <div className="lesson-card lesson-card--action">
+          <ShieldCheck aria-hidden="true" />
+          <div><span>Your calm move</span><p>{hazard.safetyAction}</p></div>
+        </div>
+      </article>
+
+      <GuidePanel
+        reaction={reaction}
+        eyebrow="Scout is watching"
+        title={hazard.shortDescription}
+      >
+        <p>{hazard.visual?.mascotCue ?? "Notice the changing conditions and make space early."}</p>
+      </GuidePanel>
+    </div>
+  );
+}
+
+function MapSlide({
+  selectedHotspot,
+  onSelect,
+}: {
+  selectedHotspot: BeachHotspot | null;
+  onSelect: (hotspot: BeachHotspot) => void;
+}) {
+  return (
+    <div className="map-slide">
+      <div className="slide-heading slide-heading--row">
+        <div>
+          <p className="slide-kicker"><MapPinned aria-hidden="true" /> Practice round</p>
+          <h2 id={`slide-title-${MAP_SLIDE}`}>Read the whole <span>beach.</span></h2>
+        </div>
+        <p>Tap the markers. Start with the flag, then scan the water, sky, structures and land.</p>
+      </div>
+      <div className="map-slide__layout">
+        <BeachMap className="presentation-map" onSelect={onSelect} />
+        <GuidePanel
+          reaction={selectedHotspot ? "warning" : "confident-pointing"}
+          gesture={selectedHotspot ? "warning" : "point-left"}
+          eyebrow={selectedHotspot ? "Signal identified" : "Scout’s scan"}
+          title={selectedHotspot?.title ?? "What changed?"}
+        >
+          <p>{selectedHotspot?.description ?? "Choose a marker and I’ll help you read it."}</p>
+        </GuidePanel>
+      </div>
+    </div>
+  );
+}
+
+function HabitsSlide({
+  checkedHabits,
+  onToggle,
+}: {
+  checkedHabits: readonly number[];
+  onToggle: (habitIndex: number) => void;
+}) {
+  const complete = checkedHabits.length === safetyPrinciples.length;
+
+  return (
+    <div className="habits-slide">
+      <div className="slide-heading slide-heading--row">
+        <div>
+          <p className="slide-kicker"><ShieldCheck aria-hidden="true" /> Tap to pack each habit</p>
+          <h2 id={`slide-title-${HABITS_SLIDE}`}>Your sixty-second <span>safety check.</span></h2>
+        </div>
+        <p>{checkedHabits.length} of {safetyPrinciples.length} ready — click each card to pack it for the beach.</p>
+      </div>
+
+      <div className="habits-slide__layout">
+        <div className="habit-grid">
+          {safetyPrinciples.map((principle, index) => {
+            const Icon = principle.icon;
+            const isChecked = checkedHabits.includes(index);
+            return (
+              <button
+                type="button"
+                className={`habit-card${isChecked ? " is-checked" : ""}`}
+                key={principle.title}
+                onClick={() => onToggle(index)}
+                aria-pressed={isChecked}
+              >
+                <span className="habit-card__icon">{isChecked ? <Check aria-hidden="true" /> : <Icon aria-hidden="true" />}</span>
+                <span className="habit-card__copy"><strong>{principle.title}</strong><small>{principle.detail}</small></span>
+                <span className="habit-card__status">{isChecked ? "Packed" : `0${index + 1}`}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <GuidePanel
+          reaction={complete ? "relieved" : "confident"}
+          gesture={complete ? "celebrate" : "point-left"}
+          eyebrow={complete ? "All packed" : "Scout’s checklist"}
+          title={complete ? "That’s a coast-ready routine!" : "Small checks prevent big surprises."}
+        >
+          <p>{complete ? "You noticed the environment, chose supervision and planned an early exit." : "Tap every habit. You can change any answer before moving on."}</p>
+        </GuidePanel>
+      </div>
+    </div>
+  );
+}
+
+function ClosingSlide({ onReplay, onReview }: { onReplay: () => void; onReview: () => void }) {
+  return (
+    <div className="closing-slide">
+      <div className="closing-slide__copy">
+        <p className="slide-kicker"><Sparkles aria-hidden="true" /> Presentation complete</p>
+        <h2 id={`slide-title-${CLOSING_SLIDE}`}>Look first. <span>Then step in.</span></h2>
+        <p>
+          A safer beach day is not about memorizing fear. It is about noticing change early,
+          giving hazards space and choosing the easy safe action.
+        </p>
+        <div className="closing-slide__recap">
+          <span><Eye aria-hidden="true" /><strong>Notice</strong> the signal</span>
+          <span><ShieldCheck aria-hidden="true" /><strong>Choose</strong> the calm move</span>
+          <span><LifeBuoy aria-hidden="true" /><strong>Help</strong> others see it</span>
+        </div>
+        <div className="closing-slide__actions">
+          <button className="deck-button deck-button--primary" type="button" onClick={onReplay}><RotateCcw aria-hidden="true" /> Replay</button>
+          <button className="deck-button deck-button--secondary" type="button" onClick={onReview}>Review the hazard index</button>
+        </div>
+      </div>
+      <div className="closing-slide__guide">
+        <GuideAvatar3D reaction="relieved" gesture="celebrate" label="Scout celebrates a coast-ready presentation" />
+        <div className="closing-slide__badge"><Check aria-hidden="true" /><span>Coast-ready<br /><strong>Nice work!</strong></span></div>
+      </div>
+    </div>
+  );
+}
 
 export default function App() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const stageRef = useRef<HTMLElement>(null);
   const [mapHotspot, setMapHotspot] = useState<BeachHotspot | null>(null);
-  const compact = useMediaQuery("(max-width: 740px)");
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.25 });
+  const [checkedHabits, setCheckedHabits] = useState<number[]>([]);
+  const navigation = usePresentationNavigation({ slideCount: slideLabels.length });
+  const { currentSlide, goTo, next, previous, swipeHandlers } = navigation;
+
+  useEffect(() => {
+    stageRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentSlide]);
+
+  const toggleHabit = (habitIndex: number) => {
+    setCheckedHabits((current) =>
+      current.includes(habitIndex)
+        ? current.filter((index) => index !== habitIndex)
+        : [...current, habitIndex],
+    );
+  };
+
+  const hazardIndex = currentSlide - INTRO_SLIDES;
+  const slideDirection = currentSlide === 0 ? 1 : currentSlide;
+
+  let slide: ReactNode;
+  if (currentSlide === 0) {
+    slide = <CoverSlide onStart={() => goTo(1)} />;
+  } else if (currentSlide === 1) {
+    slide = <HazardIndexSlide onChoose={(index) => goTo(INTRO_SLIDES + index)} />;
+  } else if (hazardIndex >= 0 && hazardIndex < hazards.length) {
+    slide = <HazardSlide hazardIndex={hazardIndex} onBackToIndex={() => goTo(1)} />;
+  } else if (currentSlide === MAP_SLIDE) {
+    slide = <MapSlide selectedHotspot={mapHotspot} onSelect={setMapHotspot} />;
+  } else if (currentSlide === HABITS_SLIDE) {
+    slide = <HabitsSlide checkedHabits={checkedHabits} onToggle={toggleHabit} />;
+  } else {
+    slide = <ClosingSlide onReplay={() => goTo(0)} onReview={() => goTo(1)} />;
+  }
 
   return (
     <MotionConfig reducedMotion="user">
-      <motion.div className="scroll-progress" style={{ scaleX }} aria-hidden="true" />
-      <a className="skip-link" href="#main">Skip to content</a>
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="Beach Signals home">
-          <span className="brand__mark"><ShieldCheck aria-hidden="true" /></span>
-          <span>Beach<span>/</span>Signals</span>
-        </a>
-        <button className="menu-button" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-controls="site-nav" aria-label={menuOpen ? "Close menu" : "Open menu"}>
-          {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-        </button>
-        <nav id="site-nav" className={menuOpen ? "is-open" : ""} aria-label="Primary navigation">
-          <a href="#hazards" onClick={() => setMenuOpen(false)}>Danger orbit</a>
-          <a href="#stories" onClick={() => setMenuOpen(false)}>Field notes</a>
-          <a href="#beach-map" onClick={() => setMenuOpen(false)}>Read a beach</a>
-          <a href="#safety" className="nav-cta" onClick={() => setMenuOpen(false)}>Safety check</a>
-        </nav>
-      </header>
-
-      <main id="main">
-        <section className="hero" id="top" aria-labelledby="hero-title">
-          <div className="hero__ambient" aria-hidden="true"><i /><i /><i /><i /></div>
-          <div className="hero__copy">
-            <motion.p className="eyebrow hero__eyebrow" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-              <Sparkles aria-hidden="true" /> An interactive beach-safety field guide
-            </motion.p>
-            <motion.h1 id="hero-title" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75, delay: 0.2 }}>
-              The beach is<br />not always <em>safe.</em>
-            </motion.h1>
-            <motion.p className="hero__lead" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.35 }}>
-              Calm water, warm sand and a clear horizon can still hide fast-moving risks. Learn the patterns, then enjoy the coast with sharper eyes.
-            </motion.p>
-            <motion.div className="hero-actions" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.48 }}>
-              <a className="button button--primary" href="#hazards">Explore the dangers <ArrowDown aria-hidden="true" /></a>
-              <a className="button button--secondary" href="#safety">Start the safety guide <ArrowRight aria-hidden="true" /></a>
-            </motion.div>
-            <motion.div className="hero__stats" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}>
-              <span><strong>09</strong> hidden patterns</span>
-              <span><strong>06</strong> calm habits</span>
-              <span><strong>01</strong> safer day</span>
-            </motion.div>
+      <div className="presentation-shell">
+        <a className="skip-link" href="#presentation-stage">Skip to current slide</a>
+        <header className="presentation-header">
+          <button className="presentation-brand" type="button" onClick={() => goTo(0)} aria-label="Return to the welcome slide">
+            <span className="presentation-brand__mark"><Waves aria-hidden="true" /></span>
+            <span>Beach<span>/</span>Signals</span>
+          </button>
+          <div className="presentation-header__context">
+            <span>Interactive safety presentation</span>
+            <strong>{slideLabels[currentSlide]}</strong>
           </div>
+          <div className="presentation-header__hint"><Keyboard aria-hidden="true" /><span>← → to navigate</span></div>
+        </header>
 
-          <motion.div className="hero__stage" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.2 }}>
-            <div className="hero__orbit-label"><span>Guide online</span><i /> Move to explore</div>
-            {compact ? (
-              <div className="hero__mobile-mascot"><AvatarGuide reaction="confident" size="large" label="Black-and-gold puzzle-piece beach safety guide" /></div>
-            ) : (
-              <Suspense fallback={<div className="hero-scene-fallback"><AvatarGuide reaction="neutral" size="large" /></div>}>
-                <HeroScene />
-              </Suspense>
-            )}
-            <div className="hero__float hero__float--flag" aria-hidden="true">⚑</div>
-            <div className="hero__float hero__float--ring" aria-hidden="true" />
-            <div className="hero__float hero__float--shell" aria-hidden="true">◒</div>
-          </motion.div>
-          <a className="hero__scroll" href="#hazards">Scroll to enter <ArrowDown aria-hidden="true" /></a>
-        </section>
+        <main
+          id="presentation-stage"
+          ref={stageRef}
+          className="presentation-stage"
+          aria-label={`Slide ${currentSlide + 1} of ${slideLabels.length}: ${slideLabels[currentSlide]}`}
+          {...swipeHandlers}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.section
+              className="presentation-slide"
+              key={currentSlide}
+              aria-labelledby={`slide-title-${currentSlide}`}
+              initial={{ opacity: 0, x: slideDirection > 0 ? 34 : -34, scale: 0.985 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -24, scale: 0.99 }}
+              transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {slide}
+            </motion.section>
+          </AnimatePresence>
+        </main>
 
-        <div className="signal-strip" aria-hidden="true">
-          <span>READ THE WATER</span><i /><span>WATCH THE SKY</span><i /><span>RESPECT THE SAND</span><i /><span>LEAVE EARLY</span>
-        </div>
-
-        <HazardOrbit />
-
-        <section className="stories section" id="stories" aria-labelledby="stories-title">
-          <div className="section-heading stories__heading">
-            <p className="eyebrow">Nine cinematic field notes</p>
-            <h2 id="stories-title">What looks ordinary can change in seconds.</h2>
-            <p>Each scene turns a hidden process into a visible signal—and one action you can remember.</p>
-          </div>
-          <div className="stories__list">{hazards.map((hazard, index) => <HazardSection key={hazard.id} hazard={hazard} index={index} />)}</div>
-        </section>
-
-        <section className="section map-section" id="beach-map" aria-labelledby="map-title">
-          <div className="section-heading section-heading--split">
-            <div><p className="eyebrow">How to read a beach</p><h2 id="map-title">Notice what changed.</h2></div>
-            <p>Most warning signs are environmental. Tap a gold signal on the map to practice reading the scene.</p>
-          </div>
-          <div className="map-section__layout">
-            <BeachMap onSelect={setMapHotspot} />
-            <aside className="map-guide-card">
-              <AvatarGuide reaction={mapHotspot ? "warning" : "confident"} size="medium" label="Mascot looking toward the selected beach warning sign" />
-              <p className="eyebrow">Guide observation</p>
-              <h3>{mapHotspot?.title ?? "Start with the whole shoreline."}</h3>
-              <p>{mapHotspot?.description ?? "Scan the flag, water, sky and land before choosing where to sit or swim."}</p>
-              <span>{mapHotspot ? "Signal identified" : "Choose a hotspot"}</span>
-            </aside>
-          </div>
-        </section>
-
-        <SafetyChecklist />
-        <FooterScene />
-      </main>
-      <footer className="site-footer"><span>Beach/Signals — an educational field guide.</span><span>Look first. Then step in.</span></footer>
+        <PresentationControls
+          currentSlide={currentSlide}
+          slideCount={slideLabels.length}
+          slideLabels={slideLabels}
+          onPrevious={previous}
+          onNext={next}
+          onGoTo={goTo}
+        />
+      </div>
     </MotionConfig>
   );
 }

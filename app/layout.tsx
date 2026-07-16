@@ -2,12 +2,12 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Beach/Signals — Read the Coast, Enjoy It Safely",
-  description: "An immersive, interactive field guide to nine hidden beach hazards and the calm actions that keep a day by the water safer.",
-  icons: { icon: "/mascot.webp", shortcut: "/mascot.webp" },
+  title: "Beach/Signals — Interactive Safety Presentation",
+  description:
+    "A click-through, 3D-guided presentation about nine hidden beach hazards and the calm actions that make a day by the water safer.",
   openGraph: {
-    title: "Beach/Signals — The Beach Is Not Always Safe",
-    description: "Learn to spot nine hidden beach hazards through a cinematic interactive field guide.",
+    title: "Beach/Signals — Meet the Coast Before You Step In",
+    description: "Explore nine beach hazards with an expressive 3D safety guide.",
     type: "website",
   },
   twitter: {
@@ -18,10 +18,16 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#07090d",
+  themeColor: "#071019",
   colorScheme: "dark",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body>{children}</body></html>;
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
 }
