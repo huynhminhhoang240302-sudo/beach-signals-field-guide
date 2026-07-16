@@ -57,10 +57,9 @@ export function AccidentSceneMap({ onJump }: { onJump: (target: string) => void 
               className="accident-marker"
               style={{ "--marker-x": `${x}%`, "--marker-y": `${y}%` } as MarkerStyle}
               onClick={() => onJump(`story-${hazard.id}`)}
-              aria-label={`Jump to field note ${index + 1}: ${hazard.title}`}
+              aria-label={`Jump to ${hazard.title}`}
             >
               <span className="accident-marker__pin">
-                <b>{String(index + 1).padStart(2, "0")}</b>
                 <HazardGlyph name={hazard.icon} aria-hidden="true" />
               </span>
               <strong>{hazard.title}</strong>
@@ -69,7 +68,6 @@ export function AccidentSceneMap({ onJump }: { onJump: (target: string) => void 
         })}
       </div>
 
-      <p className="accident-scene-map__hint">Click a number to jump.</p>
     </div>
   );
 }

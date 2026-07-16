@@ -34,7 +34,7 @@ test("server-renders the Beach/Signals presentation shell", async () => {
   assert.match(html, /<title>Beach\/Signals/i);
   assert.match(html, /Beach\/Signals/i);
   assert.match(html, /(?:interactive|presentation|slide)/i);
-  assert.match(html, /(?:Start|Next)/i);
+  assert.match(html, /Starting/i);
   assert.doesNotMatch(html, /mascot\.webp|codex-preview|react-loading-skeleton|Lorem Ipsum/i);
 });
 
@@ -77,7 +77,7 @@ test("uses Comic Sans throughout a full-height long-scroll presentation", async 
   assert.doesNotMatch(css, /filter\s*:\s*grayscale/i);
 });
 
-test("provides long-scroll jump navigation and reveal interactions", async () => {
+test("provides long-scroll jump navigation and a return to the map", async () => {
   const app = await readProjectFile("src/App.tsx");
 
   assert.match(app, /scrollIntoView/);
@@ -85,11 +85,10 @@ test("provides long-scroll jump navigation and reveal interactions", async () =>
   assert.match(app, /data-scroll-section/);
   assert.match(app, /Jump into the guide/i);
   assert.match(app, /Jump to a hazard/i);
-  assert.match(app, /Safe action/i);
-  assert.match(app, /aria-expanded/);
+  assert.match(app, /Back to map/i);
   assert.match(app, /aria-current/);
   assert.match(app, /AccidentSceneMap/);
-  assert.doesNotMatch(app, /Scout is watching|SCOUT’S SCAN/i);
+  assert.doesNotMatch(app, /GuideAvatar3D|scroll-companion|Safe action|Next field note|FIELD NOTE \/|Scout is watching|SCOUT’S SCAN/i);
   assert.doesNotMatch(app, /Why it matters|Calm move revealed|Your sixty-second safety check|END OF FIELD GUIDE|Review the directory|Start again/i);
 });
 
@@ -103,26 +102,17 @@ test("shows all nine accidents on one clickable illustrated map", async () => {
   assert.match(map, /accident-scene-map__cliff/);
   assert.match(map, /accident-scene-map__pier/);
   assert.match(map, /accident-scene-map__parasail/);
+  assert.doesNotMatch(map, /Click a number|padStart|field note \$\{index/i);
 });
 
-test("renders a procedural 3D guide with expressive face and gestures", async () => {
-  const [app, guide] = await Promise.all([
+test("removes visible numbering from the active presentation", async () => {
+  const [app, map, hazards] = await Promise.all([
     readProjectFile("src/App.tsx"),
-    readProjectFile("src/components/GuideAvatar3D.tsx"),
+    readProjectFile("src/components/AccidentSceneMap.tsx"),
+    readProjectFile("src/data/hazards.ts"),
   ]);
 
-  assert.match(app, /GuideAvatar3D/);
-  assert.doesNotMatch(app, /mascot\.webp|<AvatarGuide\b|<HeroScene\b/i);
-  assert.match(guide, /@react-three\/fiber/);
-  assert.match(guide, /<Canvas\b/);
-  assert.match(guide, /<mesh\b|Geometry\b/);
-  assert.match(guide, /eye/i);
-  assert.match(guide, /brow/i);
-  assert.match(guide, /mouth/i);
-  assert.match(guide, /reaction|expression/i);
-  assert.match(guide, /gesture|point/i);
-  assert.doesNotMatch(
-    guide,
-    /mascot\.webp|useTexture|TextureLoader|#c89a3c|#f0ca72|<img\b/i,
-  );
+  assert.doesNotMatch(app, /padStart|hazard-chapter__number|>09<|All six habits/i);
+  assert.doesNotMatch(map, /accident-marker__pin[\s\S]*<b>/i);
+  assert.doesNotMatch(hazards, /30 minutes/i);
 });

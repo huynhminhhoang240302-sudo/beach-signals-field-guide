@@ -1194,7 +1194,6 @@ body::before { background: #000; }
 
 .scroll-brand i { color: #777; font-style: normal; }
 .scroll-header__chapter { display: grid; gap: 1px; text-align: center; }
-.scroll-header__chapter span { color: #777; font-size: 8px; font-weight: 900; letter-spacing: 0.12em; }
 .scroll-header__chapter strong { color: #fff; font-size: 11px; letter-spacing: 0.04em; }
 
 .header-jump {
@@ -1230,7 +1229,7 @@ body::before { background: #000; }
 
 .chapter-rail button {
   display: grid;
-  grid-template-columns: 18px auto;
+  grid-template-columns: 18px;
   align-items: center;
   min-height: 18px;
   padding: 0;
@@ -1250,36 +1249,8 @@ body::before { background: #000; }
   transition: width 0.2s, border-radius 0.2s, color 0.2s;
 }
 
-.chapter-rail button span {
-  font-size: 7px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.chapter-rail button:hover span,
-.chapter-rail button.is-active span { opacity: 1; }
 .chapter-rail button.is-active { color: #fff; }
 .chapter-rail button.is-active i { width: 13px; border-radius: 999px; }
-
-.scroll-companion {
-  position: fixed;
-  z-index: 80;
-  right: 26px;
-  bottom: 24px;
-  width: 238px;
-  height: 268px;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 28px;
-  background: rgba(2, 2, 2, 0.92);
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.72);
-  overflow: hidden;
-  backdrop-filter: blur(14px);
-}
-
-.scroll-companion__avatar { height: 268px; }
-.scroll-companion__avatar > [role="img"] { min-height: 0 !important; background: radial-gradient(circle at 50% 43%, rgba(255,255,255,.15), rgba(255,255,255,.03) 50%, transparent 74%) !important; }
 
 .scroll-main { width: 100%; }
 
@@ -1288,7 +1259,7 @@ body::before { background: #000; }
   width: min(calc(100% - 104px), 1500px);
   min-height: 100svh;
   margin-inline: auto;
-  padding: clamp(116px, 11vw, 170px) 300px clamp(86px, 9vw, 140px) 48px;
+  padding: clamp(116px, 11vw, 170px) 48px clamp(86px, 9vw, 140px);
   scroll-margin-top: 0;
   scroll-snap-align: start;
 }
@@ -1378,8 +1349,7 @@ body::before { background: #000; }
 }
 
 .scroll-hero__poster::before { position: absolute; inset: 20px; content: ""; border: 1px solid rgba(255,255,255,.08); border-radius: 50%; }
-.scroll-hero__poster span { position: relative; color: transparent; font-size: clamp(120px, 15vw, 230px); font-weight: 900; line-height: .7; letter-spacing: -.1em; -webkit-text-stroke: 1px rgba(255,255,255,.6); }
-.scroll-hero__poster strong { position: relative; margin-top: 44px; color: #fff; font-size: clamp(28px, 3vw, 48px); line-height: .9; letter-spacing: -.06em; }
+.scroll-hero__poster strong { position: relative; color: #fff; font-size: clamp(42px, 5vw, 78px); line-height: .86; letter-spacing: -.06em; }
 .scroll-hero__poster p { position: absolute; right: 28px; bottom: 26px; color: #6f6f6f; font-size: 8px; font-weight: 900; letter-spacing: .16em; }
 .scroll-cue { position: absolute; bottom: 34px; left: 50px; display: flex; align-items: center; gap: 8px; color: #656565; font-size: 8px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
 .scroll-cue svg { width: 14px; animation: monochromeBounce 1.8s ease-in-out infinite; }
@@ -1467,12 +1437,10 @@ body::before { background: #000; }
 
 .accident-marker { position: absolute; left: var(--marker-x); top: var(--marker-y); display: flex; align-items: center; gap: 8px; padding: 0; transform: translate(-50%, -50%); border: 0; color: #fff; background: transparent; cursor: pointer; }
 .accident-marker__pin { position: relative; display: grid; width: 52px; height: 52px; flex: 0 0 auto; place-items: center; border: 3px solid #000; border-radius: 50%; color: #000; background: #fff; box-shadow: 0 0 0 6px rgba(255,255,255,.45), 0 10px 24px rgba(0,0,0,.3); transition: transform .2s, background .2s; }
-.accident-marker__pin b { position: absolute; top: 4px; left: 4px; font-size: 8px; line-height: 1; }
 .accident-marker__pin svg { width: 21px; }
 .accident-marker strong { max-width: 132px; padding: 7px 9px; border: 2px solid #fff; border-radius: 9px; color: #fff; background: rgba(0,0,0,.84); font-size: 9px; line-height: 1.08; text-align: left; text-transform: uppercase; box-shadow: 0 8px 20px rgba(0,0,0,.25); }
 .accident-marker:hover .accident-marker__pin,
 .accident-marker:focus-visible .accident-marker__pin { transform: scale(1.14); background: #ffe36b; }
-.accident-scene-map__hint { position: absolute; z-index: 12; top: 18px; left: 18px; padding: 10px 13px; border: 2px solid #fff; border-radius: 999px; color: #fff; background: rgba(0,0,0,.82); font-size: 9px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
 
 .directory-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .directory-card {
@@ -1511,7 +1479,6 @@ body::before { background: #000; }
 .hazard-chapter__visual { position: relative; display: grid; min-height: min(70vh, 650px); place-items: center; border: 1px solid rgba(255,255,255,.2); border-radius: 34px; background: radial-gradient(circle at 50% 48%, #242424, #050505 64%); overflow: hidden; }
 .hazard-chapter__visual::before { position: absolute; inset: 10%; content: ""; border: 1px solid rgba(255,255,255,.08); border-radius: 50%; transform: rotate(12deg); }
 .hazard-chapter__visual .hazard-visual { width: min(74%, 480px); }
-.hazard-chapter__number { position: absolute; top: 20px; left: 24px; color: rgba(255,255,255,.13); font-size: 72px; font-weight: 900; letter-spacing: -.08em; }
 .hazard-chapter__signal { position: absolute; right: 18px; bottom: 18px; left: 18px; display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; padding: 15px; border: 1px solid rgba(255,255,255,.16); border-radius: 17px; background: rgba(0,0,0,.9); }
 .hazard-chapter__signal svg { width: 20px; }
 .hazard-chapter__signal span { display: block; color: #777; font-size: 7px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
@@ -1546,11 +1513,12 @@ body::before { background: #000; }
 .reveal-button[aria-expanded="true"] > svg:last-child { transform: rotate(180deg); }
 .calm-move { max-height: 0; padding: 0 17px; border-inline: 1px solid rgba(255,255,255,.18); border-radius: 0 0 15px 15px; background: #fff; color: #000; opacity: 0; overflow: hidden; transition: max-height .35s, padding .35s, opacity .25s; }
 .calm-move.is-visible { max-height: 220px; padding: 18px 17px; opacity: 1; }
+.hazard-chapter__copy > .calm-move.is-visible { margin-top: 24px; border: 1px solid rgba(255,255,255,.18); border-radius: 15px; }
 .calm-move.is-visible span { color: #555; }
 .calm-move.is-visible p { color: #111; font-weight: 700; }
-.chapter-next { display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; padding: 0; border: 0; color: #878787; background: transparent; font-size: 9px; font-weight: 900; letter-spacing: .11em; text-transform: uppercase; cursor: pointer; }
-.chapter-next:hover { color: #fff; }
-.chapter-next svg { width: 14px; }
+.back-to-map { display: inline-flex; min-height: 48px; align-items: center; gap: 9px; margin-top: 18px; padding: 0 17px; border: 1px solid rgba(255,255,255,.28); border-radius: 14px; color: #fff; background: #080808; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: color .2s, background .2s; }
+.back-to-map:hover { color: #000; background: #fff; }
+.back-to-map svg { width: 16px; }
 
 .practice-section,
 .safety-section { min-height: auto; padding-block: clamp(120px, 13vw, 190px); }
@@ -1594,9 +1562,7 @@ body::before { background: #000; }
 }
 
 @media (max-width: 1180px) {
-  .scroll-section { width: min(calc(100% - 76px), 1280px); padding-right: 218px; padding-left: 38px; }
-  .scroll-companion { right: 16px; width: 190px; height: 220px; border-radius: 23px; }
-  .scroll-companion__avatar { height: 220px; }
+  .scroll-section { width: min(calc(100% - 76px), 1280px); padding-right: 38px; padding-left: 38px; }
   .scroll-hero { grid-template-columns: minmax(0, 1fr) 300px; }
   .directory-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .hazard-chapter { grid-template-columns: minmax(300px,.8fr) minmax(340px,1fr); }
@@ -1608,9 +1574,7 @@ body::before { background: #000; }
   .scroll-header__chapter { display: none; }
   .chapter-rail { display: none; }
   .scroll-section { width: min(calc(100% - 30px), 900px); padding-right: 24px; padding-left: 24px; }
-  .scroll-companion { right: 12px; bottom: 12px; width: 142px; height: 168px; border-radius: 20px; pointer-events: none; }
-  .scroll-companion__avatar { height: 168px; }
-  .scroll-hero { grid-template-columns: 1fr; padding-right: 160px; }
+  .scroll-hero { grid-template-columns: 1fr; }
   .scroll-hero__poster { min-height: 360px; }
   .whole-map-section { width: calc(100% - 30px); padding-right: 24px; padding-left: 24px; }
   .accident-scene-map { min-height: 650px; }
@@ -1635,8 +1599,6 @@ body::before { background: #000; }
   .scroll-hero h1 { font-size: clamp(58px, 18vw, 88px); }
   .scroll-hero__poster { min-height: 330px; }
   .scroll-cue { left: 18px; bottom: 24px; }
-  .scroll-companion { width: 116px; height: 140px; }
-  .scroll-companion__avatar { height: 140px; }
   .scroll-heading h2,
   .hazard-chapter__copy h2 { font-size: clamp(46px, 15vw, 70px); }
   .directory-grid { grid-template-columns: 1fr; }
@@ -1648,12 +1610,10 @@ body::before { background: #000; }
   .accident-scene-map__hole { transform: scale(.72); transform-origin: center; }
   .accident-marker__pin { width: 42px; height: 42px; border-width: 2px; box-shadow: 0 0 0 4px rgba(255,255,255,.48), 0 8px 18px rgba(0,0,0,.28); }
   .accident-marker__pin svg { width: 17px; }
-  .accident-marker__pin b { top: 3px; left: 3px; font-size: 7px; }
   .directory-card { min-height: 116px; }
   .hazard-chapter { padding-top: 102px; }
   .hazard-chapter__visual { min-height: 430px; }
   .hazard-chapter__visual .hazard-visual { width: min(82%, 360px); }
-  .hazard-chapter__number { font-size: 54px; }
   .illustrated-map .beach-map__visual { min-height: 440px; }
   .safety-grid { grid-template-columns: 1fr; }
   .finish-section { min-height: 100svh; padding-bottom: 180px; }

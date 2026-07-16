@@ -4,10 +4,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Beach/Signals — Interactive Safety Presentation",
   description:
-    "A click-through, 3D-guided presentation about nine hidden beach hazards and the calm actions that make a day by the water safer.",
+    "An interactive beach-safety presentation with a coast-wide accident map and clear actions.",
   openGraph: {
     title: "Beach/Signals — Meet the Coast Before You Step In",
-    description: "Explore nine beach hazards with an expressive 3D safety guide.",
+    description: "Explore beach hazards through an illustrated accident map and interactive scenes.",
     type: "website",
     images: ["https://beach-signals-field-guide.hoangfffff.chatgpt.site/og-monochrome.png"],
   },

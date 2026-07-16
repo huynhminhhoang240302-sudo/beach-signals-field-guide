@@ -184,7 +184,7 @@ export const hazards = [
     dangerExplanation:
       "Lightning can strike beyond the rain area, and water, wet ground and exposed objects can conduct current.",
     safetyAction:
-      "At the first thunder, enter a substantial building or hard-topped vehicle and wait 30 minutes after the last thunder.",
+      "At the first thunder, enter a substantial building or hard-topped vehicle and wait half an hour after the last thunder.",
     icon: "CloudLightning",
     sceneType: "coastal-storm",
     mascotReaction: "worried",

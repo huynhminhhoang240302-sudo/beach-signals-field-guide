@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { MotionConfig, motion, useScroll, useSpring } from "framer-motion";
 import {
   ArrowDown,
+  ArrowLeft,
   ArrowRight,
   BadgeCheck,
   Check,
@@ -17,10 +18,6 @@ import {
 } from "lucide-react";
 import { hazards, type Hazard } from "@/src/data/hazards";
 import AccidentSceneMap from "./components/AccidentSceneMap";
-import GuideAvatar3D, {
-  type GuideGesture,
-  type GuideReaction,
-} from "./components/GuideAvatar3D";
 import HazardVisual from "./components/HazardVisual";
 
 const safetyPrinciples = [
@@ -56,32 +53,19 @@ const safetyPrinciples = [
   },
 ] as const;
 
-const guideGestureByReaction: Record<GuideReaction, GuideGesture> = {
-  neutral: "wave",
-  confident: "point-right",
-  "confident-pointing": "point-right",
-  worried: "warning",
-  warning: "warning",
-  surprised: "warning",
-  "moving-away": "point-left",
-  relieved: "celebrate",
-};
-
 type Chapter = {
   id: string;
   label: string;
-  shortLabel: string;
 };
 
 const chapters: Chapter[] = [
-  { id: "top", label: "Welcome", shortLabel: "00" },
-  { id: "directory", label: "Accident map", shortLabel: "MAP" },
-  ...hazards.map((hazard, index) => ({
+  { id: "top", label: "Welcome" },
+  { id: "directory", label: "Accident map" },
+  ...hazards.map((hazard) => ({
     id: `story-${hazard.id}`,
     label: hazard.title,
-    shortLabel: String(index + 1).padStart(2, "0"),
   })),
-  { id: "safety", label: "Safety check", shortLabel: "CHECK" },
+  { id: "safety", label: "Safety check" },
 ];
 
 function jumpTo(id: string) {
@@ -116,50 +100,20 @@ function SectionShell({
   );
 }
 
-function Companion({ activeId }: { activeId: string }) {
-  const activeHazard = hazards.find((hazard) => activeId === `story-${hazard.id}`);
-  const reaction = (activeHazard?.mascotReaction ??
-    (activeId === "safety" ? "confident" : "neutral")) as GuideReaction;
-
-  if (activeId === "directory") return null;
-
-  return (
-    <aside className="scroll-companion" aria-label="Expressive 3D beach-safety guide">
-      <div className="scroll-companion__avatar">
-        <GuideAvatar3D
-          reaction={reaction}
-          gesture={guideGestureByReaction[reaction]}
-          compact
-          label={`Scout, the expressive 3D guide, reacting ${reaction.replaceAll("-", " ")}`}
-        />
-      </div>
-    </aside>
-  );
-}
-
 function HazardStory({
   hazard,
   index,
-  revealed,
-  onReveal,
 }: {
   hazard: Hazard;
   index: number;
-  revealed: boolean;
-  onReveal: () => void;
 }) {
-  const nextId = index < hazards.length - 1
-    ? `story-${hazards[index + 1].id}`
-    : "safety";
-
   return (
     <SectionShell
       id={`story-${hazard.id}`}
       className={`hazard-chapter${index % 2 ? " hazard-chapter--reverse" : ""}`}
-      label={`Field note ${index + 1}: ${hazard.title}`}
+      label={hazard.title}
     >
       <div className="hazard-chapter__visual">
-        <span className="hazard-chapter__number">{String(index + 1).padStart(2, "0")}</span>
         <HazardVisual sceneType={hazard.sceneType} label={hazard.visual?.sceneDescription} />
         <div className="hazard-chapter__signal">
           <Eye aria-hidden="true" />
@@ -171,31 +125,18 @@ function HazardStory({
       </div>
 
       <article className="hazard-chapter__copy">
-        <p className="mono-kicker">FIELD NOTE / {String(index + 1).padStart(2, "0")}</p>
         <h2>{hazard.title}</h2>
-        <button
-          className="reveal-button"
-          type="button"
-          onClick={onReveal}
-          aria-expanded={revealed}
-          aria-controls={`${hazard.id}-action`}
-        >
-          <ShieldCheck aria-hidden="true" />
-          <span>Safe action</span>
-          <ArrowDown aria-hidden="true" />
-        </button>
         <div
           id={`${hazard.id}-action`}
-          className={`calm-move${revealed ? " is-visible" : ""}`}
-          aria-hidden={!revealed}
+          className="calm-move is-visible"
         >
           <span>Do this</span>
           <p>{hazard.safetyAction}</p>
         </div>
 
-        <button className="chapter-next" type="button" onClick={() => jumpTo(nextId)}>
-          {index < hazards.length - 1 ? "Next field note" : "Safety check"}
-          <ArrowDown aria-hidden="true" />
+        <button className="back-to-map" type="button" onClick={() => jumpTo("directory")}>
+          <ArrowLeft aria-hidden="true" />
+          Back to map
         </button>
       </article>
     </SectionShell>
@@ -204,7 +145,6 @@ function HazardStory({
 
 export default function App() {
   const [activeSection, setActiveSection] = useState("top");
-  const [revealedHazards, setRevealedHazards] = useState<string[]>([]);
   const [checkedHabits, setCheckedHabits] = useState<number[]>([]);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 130, damping: 30, mass: 0.25 });
@@ -224,15 +164,8 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
-  const activeChapterIndex = Math.max(0, chapters.findIndex((chapter) => chapter.id === activeSection));
-  const activeChapter = chapters[activeChapterIndex] ?? chapters[0];
+  const activeChapter = chapters.find((chapter) => chapter.id === activeSection) ?? chapters[0];
   const checkedComplete = checkedHabits.length === safetyPrinciples.length;
-
-  const toggleReveal = (id: string) => {
-    setRevealedHazards((current) =>
-      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
-    );
-  };
 
   const toggleHabit = (index: number) => {
     setCheckedHabits((current) =>
@@ -251,7 +184,6 @@ export default function App() {
             <span>Beach</span><i>/</i><span>Signals</span>
           </button>
           <div className="scroll-header__chapter" aria-live="polite">
-            <span>{String(activeChapterIndex + 1).padStart(2, "0")} / {chapters.length}</span>
             <strong>{activeChapter.label}</strong>
           </div>
           <button className="header-jump" type="button" onClick={() => jumpTo("directory")}>
@@ -269,12 +201,10 @@ export default function App() {
               aria-label={`Jump to ${chapter.label}`}
               aria-current={chapter.id === activeSection ? "step" : undefined}
             >
-              <i /><span>{chapter.shortLabel}</span>
+              <i />
             </button>
           ))}
         </aside>
-
-        <Companion activeId={activeSection} />
 
         <main className="scroll-main">
           <SectionShell id="top" className="scroll-hero" label="Welcome to Beach Signals">
@@ -282,7 +212,7 @@ export default function App() {
               <p className="mono-kicker">A LONG-FORM INTERACTIVE SAFETY PRESENTATION</p>
               <h1>Read the coast.<br /><span>Then step in.</span></h1>
               <p>
-                Nine hazards. One clear signal and one safe move for each.
+                Every hazard has a clear signal and a safer response.
               </p>
               <div className="scroll-hero__actions">
                 <button className="bw-button bw-button--light" type="button" onClick={() => jumpTo("directory")}>
@@ -294,7 +224,6 @@ export default function App() {
               </div>
             </div>
             <div className="scroll-hero__poster" aria-hidden="true">
-              <span>09</span>
               <strong>HIDDEN<br />SIGNALS</strong>
               <p>SCROLL / CLICK / JUMP</p>
             </div>
@@ -310,12 +239,10 @@ export default function App() {
               key={hazard.id}
               hazard={hazard}
               index={index}
-              revealed={revealedHazards.includes(hazard.id)}
-              onReveal={() => toggleReveal(hazard.id)}
             />
           ))}
 
-          <SectionShell id="safety" className="safety-section" label="Six calm safety habits">
+          <SectionShell id="safety" className="safety-section" label="Calm safety habits">
             <div className="safety-grid">
               {safetyPrinciples.map((principle, index) => {
                 const Icon = principle.icon;
@@ -331,7 +258,7 @@ export default function App() {
                     <span>{checked ? <Check aria-hidden="true" /> : <Icon aria-hidden="true" />}</span>
                     <strong>{principle.title}</strong>
                     <small>{principle.detail}</small>
-                    <i>{checked ? "PACKED" : String(index + 1).padStart(2, "0")}</i>
+                    {checked && <i>PACKED</i>}
                   </button>
                 );
               })}
@@ -340,7 +267,7 @@ export default function App() {
               <ShieldCheck aria-hidden="true" />
               <div>
                 <span>{checkedComplete ? "COAST-READY" : "KEEP PACKING"}</span>
-                <strong>{checkedComplete ? "All six habits are ready." : "Small checks prevent big surprises."}</strong>
+                <strong>{checkedComplete ? "Every habit is ready." : "Small checks prevent big surprises."}</strong>
               </div>
             </div>
           </SectionShell>
