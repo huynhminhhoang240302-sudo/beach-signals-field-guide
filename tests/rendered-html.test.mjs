@@ -107,7 +107,7 @@ test("shows all nine accidents on one clickable illustrated map", async () => {
   assert.doesNotMatch(map, /Click a number|padStart|field note \$\{index/i);
 });
 
-test("uses bold comic panels with click-triggered hazard motion", async () => {
+test("uses the nine supplied panels unchanged with click-triggered motion", async () => {
   const [visual, css] = await Promise.all([
     readProjectFile("src/components/HazardVisual.tsx"),
     readProjectFile("app/globals.css"),
@@ -116,15 +116,15 @@ test("uses bold comic panels with click-triggered hazard motion", async () => {
   assert.match(visual, /useState/);
   assert.match(visual, /aria-pressed=\{active\}/);
   assert.match(visual, /onClick=\{\(\) => setActive/);
-  assert.match(visual, /comic-person--sand/);
-  assert.match(visual, /comic-person--swimmer/);
-  assert.match(visual, /comic-lifeguard-tower/);
-  assert.match(visual, /comic-person--umbrella/);
-  assert.match(visual, /comic-person--pier/);
-  assert.match(visual, /comic-person--surge/);
-  assert.match(css, /Bold comic panels/);
+  assert.match(visual, /hazard-panel__image/);
+  const suppliedPanels = visual.match(/"\/hazard-panels\/[^"\r\n]+\.png"/g) ?? [];
+  assert.equal(suppliedPanels.length, 9);
+  await Promise.all(
+    suppliedPanels.map((panel) => access(projectFile(`public${panel.slice(1, -1)}`))),
+  );
   assert.match(css, /hazard-visual\.is-active/);
-  assert.match(css, /#ff(?:e51e|ab7a|da4e)/i);
+  assert.match(css, /suppliedPanel(?:Breath|Ring|Pulse)/);
+  assert.match(css, /--panel-accent/);
 });
 
 test("removes visible numbering from the active presentation", async () => {
