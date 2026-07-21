@@ -107,7 +107,7 @@ test("shows all nine accidents on one clickable illustrated map", async () => {
   assert.doesNotMatch(map, /Click a number|padStart|field note \$\{index/i);
 });
 
-test("pairs the nine supplied panels with retouched interactive action frames", async () => {
+test("uses only the nine retouched panels with artwork motion and face privacy", async () => {
   const [visual, css] = await Promise.all([
     readProjectFile("src/components/HazardVisual.tsx"),
     readProjectFile("app/globals.css"),
@@ -117,18 +117,23 @@ test("pairs the nine supplied panels with retouched interactive action frames", 
   assert.match(visual, /aria-pressed=\{active\}/);
   assert.match(visual, /onClick=\{\(\) => setActive/);
   assert.match(visual, /hazard-panel__image/);
-  const suppliedPanels = visual.match(/"\/hazard-panels\/[^"\r\n]+\.png"/g) ?? [];
-  assert.equal(suppliedPanels.length, 9);
-  await Promise.all(
-    suppliedPanels.map((panel) => access(projectFile(`public${panel.slice(1, -1)}`))),
-  );
+  assert.doesNotMatch(visual, /"\/hazard-panels\/(?!active)/);
   const activePanels = visual.match(/"\/hazard-panels-active\/[^"\r\n]+\.png"/g) ?? [];
   assert.equal(activePanels.length, 9);
   await Promise.all(
     activePanels.map((panel) => access(projectFile(`public${panel.slice(1, -1)}`))),
   );
+  assert.match(visual, /hazard-panel__kinetic--primary/);
+  assert.match(visual, /hazard-panel__kinetic--secondary/);
+  assert.match(visual, /hazard-panel__face-blur--static/);
+  assert.match(visual, /sceneFaceMasks/);
+  assert.doesNotMatch(visual, /hazard-panel__motion|hazard-panel__image--rest/);
   assert.match(css, /hazard-visual\.is-active/);
-  assert.match(css, /inner(?:DebrisFall|CurrentPull|WaveSurge|Spark|Wind|Swing)/);
+  assert.match(css, /clip-path:\s*(?:ellipse|polygon)/);
+  assert.match(css, /@keyframes (?:personClimb|swimmerStroke|boulderDrop|wavePush|lightningImpact|umbrellaFlip|pierDrop|parasailerSwing)/);
+  assert.match(css, /backdrop-filter:\s*blur\(14px\)/);
+  assert.match(css, /--art-width/);
+  assert.doesNotMatch(css, /hazard-panel__motion|inner(?:DebrisFall|CurrentPull|WaveSurge|Spark|Wind|Swing)/);
   assert.match(css, /--panel-accent/);
 });
 
