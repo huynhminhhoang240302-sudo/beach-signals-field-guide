@@ -107,7 +107,7 @@ test("shows all nine accidents on one clickable illustrated map", async () => {
   assert.doesNotMatch(map, /Click a number|padStart|field note \$\{index/i);
 });
 
-test("uses only the nine retouched panels with artwork motion and face privacy", async () => {
+test("uses only the nine retouched panels with artwork motion and no face covers", async () => {
   const [visual, css] = await Promise.all([
     readProjectFile("src/components/HazardVisual.tsx"),
     readProjectFile("app/globals.css"),
@@ -125,13 +125,12 @@ test("uses only the nine retouched panels with artwork motion and face privacy",
   );
   assert.match(visual, /hazard-panel__kinetic--primary/);
   assert.match(visual, /hazard-panel__kinetic--secondary/);
-  assert.match(visual, /hazard-panel__face-blur--static/);
-  assert.match(visual, /sceneFaceMasks/);
+  assert.doesNotMatch(visual, /hazard-panel__face-blur|sceneFaceMasks|FaceMask/);
   assert.doesNotMatch(visual, /hazard-panel__motion|hazard-panel__image--rest/);
   assert.match(css, /hazard-visual\.is-active/);
   assert.match(css, /clip-path:\s*(?:ellipse|polygon)/);
   assert.match(css, /@keyframes (?:personClimb|swimmerStroke|boulderDrop|wavePush|lightningImpact|umbrellaFlip|pierDrop|parasailerSwing)/);
-  assert.match(css, /backdrop-filter:\s*blur\(14px\)/);
+  assert.doesNotMatch(css, /hazard-panel__face-blur/);
   assert.match(css, /--art-width/);
   assert.doesNotMatch(css, /hazard-panel__motion|inner(?:DebrisFall|CurrentPull|WaveSurge|Spark|Wind|Swing)/);
   assert.match(css, /--panel-accent/);
