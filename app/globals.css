@@ -1679,9 +1679,9 @@ body::before { background: #000; }
 .hazard-chapter__visual .hazard-visual {
   --panel-accent: #ef3338;
   position: relative;
-  width: min(74%, 470px);
-  aspect-ratio: 3 / 4;
-  border-radius: 24px;
+  width: min(82%, 530px);
+  aspect-ratio: 1;
+  border-radius: 50%;
   filter: none;
 }
 .hazard-chapter__visual .hazard-visual--sand-collapse { --panel-accent: #8f55d7; }
@@ -1701,69 +1701,84 @@ body::before { background: #000; }
   z-index: 1;
   inset: 0;
   display: block;
-  border: 4px solid #050505;
-  border-radius: 24px;
+  border: 0;
+  border-radius: 50%;
   background: #fff;
   box-shadow: 0 18px 0 color-mix(in srgb, var(--panel-accent) 38%, #050505), 0 28px 56px rgba(0,0,0,.28);
   overflow: hidden;
 }
 .hazard-panel__image {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center top;
   background: #fff;
   user-select: none;
-  transition: transform .3s ease;
+  transition: opacity .28s ease, filter .28s ease;
 }
-.hazard-chapter__visual .hazard-visual:hover .hazard-panel__image { transform: scale(1.018); }
+.hazard-panel__image--rest { z-index: 1; filter: saturate(.9) contrast(1.035); }
+.hazard-panel__image--active { z-index: 2; opacity: 0; }
+.hazard-visual.is-active .hazard-panel__image--active { opacity: 1; }
+.hazard-visual.is-active .hazard-panel__image--rest { opacity: .12; }
 .hazard-chapter__visual .hazard-visual__rim {
   position: absolute;
   z-index: 6;
   inset: -7px;
   display: block;
   border: 2px solid #050505;
-  border-radius: 29px;
+  border-radius: 50%;
   box-shadow: none;
   pointer-events: none;
 }
-.hazard-panel__motion,
-.hazard-panel__pulse {
+.hazard-panel__motion {
   position: absolute;
   z-index: 4;
-  left: 50%;
-  top: 38%;
+  inset: 5%;
   display: block;
-  width: 68%;
-  aspect-ratio: 1;
-  translate: -50% -50%;
-  border: 5px solid var(--panel-accent);
-  border-radius: 50%;
   opacity: 0;
+  overflow: hidden;
   pointer-events: none;
 }
 .hazard-panel__motion i {
   position: absolute;
   display: block;
-  width: 13px;
-  height: 13px;
-  border: 3px solid #050505;
+  width: 11px;
+  height: 11px;
+  border: 2px solid #050505;
   border-radius: 50%;
   background: var(--panel-accent);
+  box-shadow: 0 0 0 2px rgba(255,255,255,.8);
 }
-.hazard-panel__motion i:first-child { left: -9px; top: 42%; }
-.hazard-panel__motion i:nth-child(2) { right: 5%; top: 2%; }
-.hazard-panel__motion i:last-child { right: 8%; bottom: 3%; }
-.hazard-panel__pulse { z-index: 3; width: 62%; border-width: 3px; }
-.hazard-visual.is-active .hazard-panel__image { animation: suppliedPanelBreath 1.25s ease-in-out infinite alternate; }
-.hazard-visual.is-active .hazard-panel__motion { opacity: .95; animation: suppliedPanelRing 1.25s ease-out infinite; }
-.hazard-visual.is-active .hazard-panel__motion i { animation: suppliedPanelDot .62s ease-in-out infinite alternate; }
-.hazard-visual.is-active .hazard-panel__pulse { opacity: .5; animation: suppliedPanelPulse 1.25s ease-out infinite; }
+.hazard-panel__motion i:first-child { left: 38%; top: 26%; }
+.hazard-panel__motion i:nth-child(2) { left: 54%; top: 44%; }
+.hazard-panel__motion i:last-child { left: 65%; top: 62%; }
+.hazard-visual.is-active .hazard-panel__motion { opacity: 1; }
 
-@keyframes suppliedPanelBreath { to { transform: scale(1.035); } }
-@keyframes suppliedPanelRing { to { rotate: 12deg; scale: 1.08; } }
-@keyframes suppliedPanelDot { to { scale: 1.42; } }
-@keyframes suppliedPanelPulse { to { scale: 1.24; opacity: 0; } }
+.hazard-visual--sand-collapse.is-active .hazard-panel__motion i,
+.hazard-visual--bluff-fall.is-active .hazard-panel__motion i,
+.hazard-visual--structural-failure.is-active .hazard-panel__motion i { animation: innerDebrisFall .9s ease-in infinite; }
+.hazard-visual--offshore-current .hazard-panel__motion i,
+.hazard-visual--evacuation-wave .hazard-panel__motion i,
+.hazard-visual--unexpected-surge .hazard-panel__motion i { width: 44px; height: 6px; border: 0; border-radius: 999px; background: #fff; box-shadow: 0 2px 0 #2b99c1; }
+.hazard-visual--offshore-current.is-active .hazard-panel__motion i { animation: innerCurrentPull 1s linear infinite; }
+.hazard-visual--evacuation-wave.is-active .hazard-panel__motion i,
+.hazard-visual--unexpected-surge.is-active .hazard-panel__motion i { animation: innerWaveSurge .8s ease-in infinite; }
+.hazard-visual--coastal-storm .hazard-panel__motion i { width: 16px; height: 16px; border-radius: 0; background: #fff; transform: rotate(45deg); box-shadow: 0 0 0 3px #18bde5; }
+.hazard-visual--coastal-storm.is-active .hazard-panel__motion i { animation: innerSpark .45s steps(2) infinite; }
+.hazard-visual--windborne-object .hazard-panel__motion i { width: 54px; height: 5px; border: 0; border-radius: 999px; background: #fff; box-shadow: none; }
+.hazard-visual--windborne-object.is-active .hazard-panel__motion i { animation: innerWind 1s linear infinite; }
+.hazard-visual--tow-system .hazard-panel__motion i { background: #f5d64a; }
+.hazard-visual--tow-system.is-active .hazard-panel__motion i { animation: innerSwing .8s ease-in-out infinite alternate; }
+
+@keyframes innerDebrisFall { from { translate: 0 -16px; opacity: 0; } 35% { opacity: 1; } to { translate: 8px 70px; opacity: 0; } }
+@keyframes innerCurrentPull { from { translate: 0 58px; opacity: 0; } 30% { opacity: 1; } to { translate: 8px -74px; opacity: 0; } }
+@keyframes innerWaveSurge { from { translate: 58px 0; opacity: 0; } 35% { opacity: 1; } to { translate: -66px 12px; opacity: 0; } }
+@keyframes innerSpark { 50% { scale: .35; opacity: .18; } }
+@keyframes innerWind { from { translate: -70px 0; opacity: 0; } 30% { opacity: 1; } to { translate: 105px -12px; opacity: 0; } }
+@keyframes innerSwing { to { translate: 18px 9px; rotate: 15deg; } }
 .hazard-chapter__copy { max-width: 650px; }
 .hazard-chapter__copy h2 { font-size: clamp(50px, 5.8vw, 92px); }
 .hazard-chapter__why { margin-top: 24px; padding: 17px 0; border-block: 1px solid rgba(255,255,255,.13); }

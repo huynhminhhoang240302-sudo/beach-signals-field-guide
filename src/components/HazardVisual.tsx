@@ -48,6 +48,18 @@ const sceneImages: Record<HazardSceneType, string> = {
   "unexpected-surge": "/hazard-panels/sneaker-wave.png",
 };
 
+const sceneActiveImages: Record<HazardSceneType, string> = {
+  "sand-collapse": "/hazard-panels-active/sand-hole-collapse-active.png",
+  "offshore-current": "/hazard-panels-active/rip-current-active.png",
+  "bluff-fall": "/hazard-panels-active/cliff-collapse-active.png",
+  "evacuation-wave": "/hazard-panels-active/tsunami-active.png",
+  "coastal-storm": "/hazard-panels-active/lightning-active.png",
+  "windborne-object": "/hazard-panels-active/umbrella-active.png",
+  "structural-failure": "/hazard-panels-active/pier-collapse-active.png",
+  "tow-system": "/hazard-panels-active/parasailing-active.png",
+  "unexpected-surge": "/hazard-panels-active/sneaker-wave-active.png",
+};
+
 function PanelContents({ sceneType }: { sceneType: HazardSceneType }) {
   return (
     <>
@@ -55,14 +67,25 @@ function PanelContents({ sceneType }: { sceneType: HazardSceneType }) {
         {/* Native img preserves the supplied files exactly; no optimizer rewrites them. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          className="hazard-panel__image"
+          className="hazard-panel__image hazard-panel__image--rest"
           src={sceneImages[sceneType]}
           alt=""
           draggable="false"
+          loading="lazy"
+          decoding="async"
+        />
+        {/* The retouched action frame replaces only the illustrated area. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className="hazard-panel__image hazard-panel__image--active"
+          src={sceneActiveImages[sceneType]}
+          alt=""
+          draggable="false"
+          loading="lazy"
+          decoding="async"
         />
       </span>
       <span className="hazard-panel__motion" aria-hidden="true"><i /><i /><i /></span>
-      <span className="hazard-panel__pulse" aria-hidden="true" />
       <span className="hazard-visual__rim" aria-hidden="true" />
     </>
   );

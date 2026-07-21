@@ -107,7 +107,7 @@ test("shows all nine accidents on one clickable illustrated map", async () => {
   assert.doesNotMatch(map, /Click a number|padStart|field note \$\{index/i);
 });
 
-test("uses the nine supplied panels unchanged with click-triggered motion", async () => {
+test("pairs the nine supplied panels with retouched interactive action frames", async () => {
   const [visual, css] = await Promise.all([
     readProjectFile("src/components/HazardVisual.tsx"),
     readProjectFile("app/globals.css"),
@@ -122,8 +122,13 @@ test("uses the nine supplied panels unchanged with click-triggered motion", asyn
   await Promise.all(
     suppliedPanels.map((panel) => access(projectFile(`public${panel.slice(1, -1)}`))),
   );
+  const activePanels = visual.match(/"\/hazard-panels-active\/[^"\r\n]+\.png"/g) ?? [];
+  assert.equal(activePanels.length, 9);
+  await Promise.all(
+    activePanels.map((panel) => access(projectFile(`public${panel.slice(1, -1)}`))),
+  );
   assert.match(css, /hazard-visual\.is-active/);
-  assert.match(css, /suppliedPanel(?:Breath|Ring|Pulse)/);
+  assert.match(css, /inner(?:DebrisFall|CurrentPull|WaveSurge|Spark|Wind|Swing)/);
   assert.match(css, /--panel-accent/);
 });
 
