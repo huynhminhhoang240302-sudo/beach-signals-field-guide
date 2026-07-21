@@ -304,6 +304,204 @@ h1, h2, h3, p, figure { margin: 0; }
 .hazard-scene__sneaker-foam--three { right: -1%; top: 50%; width: 29%; height: 4%; }
 .hazard-scene__surge-shadow { left: 33%; bottom: 13%; width: 40%; height: 10%; border-radius: 50%; background: rgba(0, 0, 0, 0.23); filter: blur(8px); }
 
+/* Bold comic panels inspired by the supplied beach-accident field guide. */
+.hazard-visual {
+  appearance: none;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  transition: transform .22s ease, filter .22s ease;
+}
+.hazard-visual:hover,
+.hazard-visual:focus-visible { transform: scale(1.025); filter: saturate(1.08); }
+.hazard-visual:focus-visible { outline: 5px solid #000; outline-offset: 7px; }
+.hazard-visual.is-active { transform: scale(1.035) rotate(-1deg); }
+.hazard-visual__frame {
+  inset: 4%;
+  border: 5px solid #050505;
+  background: #75c9ef;
+  box-shadow: none;
+}
+.hazard-visual__rim { inset: 1.8%; border: 4px solid #050505; box-shadow: 0 13px 0 rgba(0,0,0,.18); }
+.hazard-visual__glint { display: none; }
+.hazard-scene { background: #75c9ef; }
+.hazard-scene__sky,
+.hazard-scene__storm-sky { background: #75c9ef; }
+.hazard-scene__sand-field,
+.hazard-scene__beach-strip,
+.hazard-scene__exposed-shore { background: #e7c477; }
+.hazard-scene__sea,
+.hazard-scene__water-field,
+.hazard-scene__rough-water,
+.hazard-scene__calm-water,
+.hazard-scene__withdrawn-sea { background: #259fc9; }
+.hazard-scene__pit-rim,
+.hazard-scene__pit,
+.hazard-scene__cliff,
+.hazard-scene__cliff-cap,
+.hazard-scene__tsunami-wave,
+.hazard-scene__wave-curl,
+.hazard-scene__storm-cloud,
+.hazard-scene__umbrella-canopy,
+.hazard-scene__pier-deck,
+.hazard-scene__parasail-canopy,
+.hazard-scene__sneaker-wave { filter: drop-shadow(2px 2px 0 #050505); }
+
+.hazard-scene--sand-collapse .hazard-scene__sky { background: #8f55d7; }
+.hazard-scene--sand-collapse .hazard-scene__sand-field--back,
+.hazard-scene--sand-collapse .hazard-scene__sand-field--front { background: #dfbd74; }
+.hazard-scene--sand-collapse .hazard-scene__pit-rim { background: #b8904f; }
+.hazard-scene--sand-collapse .hazard-scene__pit { background: #241b17; }
+
+.hazard-scene--offshore-current .hazard-scene__water-field { background: repeating-linear-gradient(165deg, #49b7df 0 17px, #2498c5 18px 29px); }
+.hazard-scene--offshore-current .hazard-scene__shore { background: #efd38f; box-shadow: 0 -4px 0 #050505; }
+.hazard-scene__current-channel { background: #0d6f9f; filter: drop-shadow(3px 0 0 #050505) drop-shadow(-3px 0 0 #050505); }
+.hazard-scene__current-flow { width: 5px; background: #fff; box-shadow: none; }
+.hazard-scene__current-head { border-color: #fff; filter: drop-shadow(1px 1px 0 #050505); }
+
+.hazard-scene--bluff-fall .hazard-scene__sky { background: #adf05f; }
+.hazard-scene--bluff-fall .hazard-scene__sea { background: #69c8e5; }
+.hazard-scene__cliff { background: #a77e4f; }
+.hazard-scene__cliff-cap { background: #72b947; box-shadow: 0 3px 0 #050505; }
+.hazard-scene__falling-rock { background: #8f673f; filter: drop-shadow(2px 2px 0 #050505); }
+
+.hazard-scene--evacuation-wave .hazard-scene__sky { background: #f23131; }
+.hazard-scene--evacuation-wave .hazard-scene__exposed-shore { background: #f0d38c; }
+.hazard-scene__tsunami-wave { background: #456d6b; }
+.hazard-scene__wave-curl { border-color: #eaf8f5; border-left-color: transparent; border-bottom-color: transparent; }
+
+.hazard-scene--coastal-storm .hazard-scene__storm-sky { background: #ffe51e; }
+.hazard-scene--coastal-storm .hazard-scene__beach-strip { background: #efd68b; box-shadow: 0 -4px 0 #050505; }
+.hazard-scene__storm-cloud { background: #667382; }
+.hazard-scene__lightning-bolt { background: #fff; filter: drop-shadow(3px 3px 0 #19bde8) drop-shadow(-2px -2px 0 #050505); }
+
+.hazard-scene--windborne-object .hazard-scene__sky { background: #ffab7a; }
+.hazard-scene--windborne-object .hazard-scene__sand-field { background: #f3cf82; box-shadow: 0 -4px 0 #050505; }
+.hazard-scene__umbrella-canopy { border: 3px solid #050505; background: conic-gradient(from 267deg at 50% 100%, #ff5a5a, #ffd75a, #42bce5, #ff865d, #ff5a5a); }
+.hazard-scene__umbrella-pole { width: 6px; background: #050505; }
+
+.hazard-scene--structural-failure .hazard-scene__sky { background: #a7262e; }
+.hazard-scene--structural-failure .hazard-scene__rough-water { background: repeating-linear-gradient(165deg, #3f95a9 0 18px, #24657a 20px 34px); box-shadow: 0 -4px 0 #050505; }
+.hazard-scene__pier-deck { background: repeating-linear-gradient(90deg, #6e432a 0 14px, #b2794b 15px 18px); box-shadow: 0 3px 0 #050505; }
+
+.hazard-scene--tow-system .hazard-scene__sky { background: #3b306f; }
+.hazard-scene--tow-system .hazard-scene__sea { background: #317f9e; box-shadow: 0 -4px 0 #050505; }
+.hazard-scene__parasail-canopy { background: conic-gradient(from 265deg at 50% 100%, #ffda4e, #32bde8, #ee4e5b, #8c57d7, #ffda4e); filter: drop-shadow(3px 3px 0 #050505); }
+
+.hazard-scene--unexpected-surge .hazard-scene__sky { background: #9ce7d8; }
+.hazard-scene--unexpected-surge .hazard-scene__sand-field { background: #f2d28c; box-shadow: 4px -3px 0 #050505; }
+.hazard-scene--unexpected-surge .hazard-scene__calm-water { background: #48b9bd; }
+.hazard-scene__sneaker-wave { background: #3e9e9f; }
+
+.comic-person,
+.comic-person i,
+.comic-hand,
+.comic-hand i,
+.comic-lifeguard-tower,
+.comic-lifeguard-tower i,
+.hazard-scene__parasailer-arm,
+.hazard-scene__parasailer-leg { position: absolute; display: block; box-sizing: border-box; }
+.comic-person { z-index: 15; width: 44px; height: 72px; transform-origin: center bottom; }
+.comic-person__head { left: 13px; top: 0; width: 24px; height: 24px; border: 3px solid #050505; border-radius: 50%; background: #ffd59f; }
+.comic-person__body { left: 15px; top: 21px; width: 20px; height: 34px; border: 3px solid #050505; border-radius: 9px 9px 5px 5px; background: #f14e4e; }
+.comic-person__arm,
+.comic-person__leg { width: 7px; border: 2px solid #050505; border-radius: 999px; background: #ffd59f; transform-origin: top; }
+.comic-person__arm { top: 25px; height: 29px; }
+.comic-person__arm--left { left: 13px; transform: rotate(52deg); }
+.comic-person__arm--right { right: 9px; transform: rotate(-52deg); }
+.comic-person__leg { top: 50px; height: 27px; background: #252525; }
+.comic-person__leg--left { left: 17px; transform: rotate(22deg); }
+.comic-person__leg--right { right: 7px; transform: rotate(-24deg); }
+.comic-person__eye { z-index: 3; top: 10px; width: 4px; height: 5px; border-radius: 50%; background: #050505; }
+.comic-person__eye--left { left: 19px; }
+.comic-person__eye--right { left: 29px; }
+
+.comic-person--sand { left: 44%; top: 57%; width: 52px; height: 42px; }
+.comic-person--sand .comic-person__head { width: 31px; height: 31px; background: #fff0c5; }
+.comic-hand--sand { z-index: 16; left: 31%; top: 43%; width: 18px; height: 54px; border: 3px solid #050505; border-radius: 12px; background: #ffd59f; transform: rotate(-7deg); transform-origin: bottom; }
+.comic-hand--sand i { top: -15px; width: 5px; height: 24px; border: 2px solid #050505; border-radius: 999px; background: #ffd59f; }
+.comic-hand--sand i:nth-child(1) { left: -7px; transform: rotate(-25deg); }
+.comic-hand--sand i:nth-child(2) { left: 0; }
+.comic-hand--sand i:nth-child(3) { left: 7px; height: 27px; }
+.comic-hand--sand i:nth-child(4) { right: -7px; transform: rotate(25deg); }
+.comic-person--swimmer { right: 15%; top: 39%; transform: rotate(12deg) scale(.88); }
+.comic-person--swimmer .comic-person__body { height: 20px; background: #ffda4e; }
+.comic-person--swimmer .comic-person__arm { top: 28px; height: 37px; }
+.comic-person--cliff { right: 10%; bottom: 9%; transform: scale(.78); }
+.comic-person--cliff .comic-person__body { background: #277db7; }
+.comic-person--tsunami-one { right: 16%; bottom: 9%; transform: scale(.66) rotate(-7deg); }
+.comic-person--tsunami-two { right: 30%; bottom: 4%; transform: scale(.52) rotate(8deg); }
+.comic-person--tsunami-two .comic-person__body { background: #ffd94d; }
+.comic-person--umbrella { right: 10%; bottom: 7%; transform: scale(.8) rotate(7deg); }
+.comic-person--umbrella .comic-person__body { background: #fff; }
+.comic-person--pier { right: 35%; top: 31%; transform: scale(.58) rotate(18deg); }
+.comic-person--surge-one { left: 18%; bottom: 7%; transform: scale(.6) rotate(-7deg); }
+.comic-person--surge-two { left: 34%; bottom: 2%; transform: scale(.48) rotate(8deg); }
+.comic-person--surge-one .comic-person__body { background: #ffd94d; }
+.comic-person--surge-two .comic-person__body { background: #fff; }
+
+.comic-lifeguard-tower { z-index: 14; left: 18%; bottom: 12%; width: 54px; height: 58px; }
+.comic-lifeguard-tower::before { position: absolute; left: 8px; top: 0; width: 40px; height: 25px; border: 4px solid #050505; content: ""; background: #56b9df; }
+.comic-lifeguard-tower::after { position: absolute; left: 17px; top: 24px; width: 6px; height: 39px; content: ""; background: #050505; transform: rotate(15deg); box-shadow: 22px 0 #050505; }
+.comic-lifeguard-tower i:first-child { left: 12px; top: 32px; width: 34px; height: 5px; background: #050505; }
+
+.hazard-scene__parasailer-head { z-index: 16; width: 8%; border: 3px solid #050505; background: #ffd59f; }
+.hazard-scene__parasailer-body { z-index: 15; width: 6%; height: 14%; border: 3px solid #050505; border-radius: 8px; background: #fff; }
+.hazard-scene__parasailer-arm { z-index: 14; left: 47%; top: 69%; width: 5px; height: 14%; border: 2px solid #050505; border-radius: 999px; background: #ffd59f; transform-origin: top; }
+.hazard-scene__parasailer-arm--left { transform: rotate(58deg); }
+.hazard-scene__parasailer-arm--right { left: 53%; transform: rotate(-58deg); }
+.hazard-scene__parasailer-leg { z-index: 14; left: 48%; top: 76%; width: 6px; height: 12%; border: 2px solid #050505; border-radius: 999px; background: #ffd59f; transform-origin: top; }
+.hazard-scene__parasailer-leg--left { transform: rotate(30deg); }
+.hazard-scene__parasailer-leg--right { left: 52%; transform: rotate(-32deg); }
+
+.hazard-visual .hazard-scene__sand-slide,
+.hazard-visual .hazard-scene__sand-grain,
+.hazard-visual .hazard-scene__falling-rock,
+.hazard-visual .hazard-scene__storm-cloud,
+.hazard-visual .hazard-scene__umbrella-canopy,
+.hazard-visual .hazard-scene__umbrella-pole,
+.hazard-visual .hazard-scene__wind-grain,
+.hazard-visual .hazard-scene__rough-wave,
+.hazard-visual .hazard-scene__parasail-canopy,
+.hazard-visual .hazard-scene__sneaker-wave { animation-play-state: paused; }
+.hazard-visual.is-active .hazard-scene__sand-slide,
+.hazard-visual.is-active .hazard-scene__sand-grain,
+.hazard-visual.is-active .hazard-scene__falling-rock,
+.hazard-visual.is-active .hazard-scene__storm-cloud,
+.hazard-visual.is-active .hazard-scene__umbrella-canopy,
+.hazard-visual.is-active .hazard-scene__umbrella-pole,
+.hazard-visual.is-active .hazard-scene__wind-grain,
+.hazard-visual.is-active .hazard-scene__rough-wave,
+.hazard-visual.is-active .hazard-scene__parasail-canopy,
+.hazard-visual.is-active .hazard-scene__sneaker-wave { animation-play-state: running; }
+.hazard-visual.is-active .comic-hand--sand { animation: comicHandWave .7s ease-in-out infinite alternate; }
+.hazard-visual.is-active .comic-person--swimmer { animation: comicSwimmer 1.1s ease-in-out infinite alternate; }
+.hazard-visual.is-active .comic-person--cliff { animation: comicStartle .55s ease-in-out infinite alternate; }
+.hazard-visual.is-active .comic-person--tsunami-one,
+.hazard-visual.is-active .comic-person--tsunami-two { animation: comicRun .7s ease-in-out infinite alternate; }
+.hazard-visual.is-active .hazard-scene__lightning-bolt { animation: comicFlash .48s steps(2) infinite; }
+.hazard-visual.is-active .comic-person--umbrella { animation: comicLean .65s ease-in-out infinite alternate; }
+.hazard-visual.is-active .comic-person--pier { animation: comicFall .85s ease-in infinite; }
+.hazard-visual.is-active .hazard-scene__parasailer-body,
+.hazard-visual.is-active .hazard-scene__parasailer-head,
+.hazard-visual.is-active .hazard-scene__parasailer-arm,
+.hazard-visual.is-active .hazard-scene__parasailer-leg { animation: comicSwing 1s ease-in-out infinite alternate; }
+.hazard-visual.is-active .comic-person--surge-one,
+.hazard-visual.is-active .comic-person--surge-two { animation: comicStartle .55s ease-in-out infinite alternate; }
+
+@keyframes comicHandWave { to { transform: rotate(13deg) translateY(-7px); } }
+@keyframes comicSwimmer { to { transform: translate(-13px, -4px) rotate(-8deg) scale(.88); } }
+@keyframes comicStartle { to { transform: translateY(-8px) scale(.78) rotate(6deg); } }
+@keyframes comicRun { to { translate: 12px 0; } }
+@keyframes comicFlash { 50% { opacity: .18; } }
+@keyframes comicLean { to { transform: scale(.8) rotate(18deg) translateX(7px); } }
+@keyframes comicFall { to { transform: translate(30px, 70px) scale(.58) rotate(80deg); opacity: .3; } }
+@keyframes comicSwing { to { translate: 7px 4px; rotate: 5deg; } }
+
 .map-section { width: min(100% - 48px, 1420px); }
 .map-section__layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 28px; align-items: stretch; }
 .beach-map { display: grid; grid-template-rows: auto auto; min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 38px; background: #0d1218; }
@@ -1476,9 +1674,9 @@ body::before { background: #000; }
 
 .hazard-chapter--reverse .hazard-chapter__visual { order: 2; }
 .hazard-chapter--reverse .hazard-chapter__copy { order: 1; }
-.hazard-chapter__visual { position: relative; display: grid; min-height: min(70vh, 650px); place-items: center; border: 1px solid rgba(255,255,255,.2); border-radius: 34px; background: radial-gradient(circle at 50% 48%, #242424, #050505 64%); overflow: hidden; }
-.hazard-chapter__visual::before { position: absolute; inset: 10%; content: ""; border: 1px solid rgba(255,255,255,.08); border-radius: 50%; transform: rotate(12deg); }
-.hazard-chapter__visual .hazard-visual { width: min(74%, 480px); }
+.hazard-chapter__visual { position: relative; display: grid; min-height: min(74vh, 690px); place-items: center; border: 3px solid #050505; border-radius: 34px; background: #f7f4e8; box-shadow: 0 0 0 2px #fff, 0 28px 80px rgba(0,0,0,.4); overflow: hidden; }
+.hazard-chapter__visual::before { position: absolute; inset: 5%; content: ""; border: 2px solid rgba(0,0,0,.08); border-radius: 50%; transform: rotate(5deg); }
+.hazard-chapter__visual .hazard-visual { width: min(88%, 560px); }
 .hazard-chapter__copy { max-width: 650px; }
 .hazard-chapter__copy h2 { font-size: clamp(50px, 5.8vw, 92px); }
 .hazard-chapter__why { margin-top: 24px; padding: 17px 0; border-block: 1px solid rgba(255,255,255,.13); }

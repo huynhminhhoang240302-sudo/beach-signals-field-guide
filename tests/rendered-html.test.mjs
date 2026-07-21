@@ -107,6 +107,26 @@ test("shows all nine accidents on one clickable illustrated map", async () => {
   assert.doesNotMatch(map, /Click a number|padStart|field note \$\{index/i);
 });
 
+test("uses bold comic panels with click-triggered hazard motion", async () => {
+  const [visual, css] = await Promise.all([
+    readProjectFile("src/components/HazardVisual.tsx"),
+    readProjectFile("app/globals.css"),
+  ]);
+
+  assert.match(visual, /useState/);
+  assert.match(visual, /aria-pressed=\{active\}/);
+  assert.match(visual, /onClick=\{\(\) => setActive/);
+  assert.match(visual, /comic-person--sand/);
+  assert.match(visual, /comic-person--swimmer/);
+  assert.match(visual, /comic-lifeguard-tower/);
+  assert.match(visual, /comic-person--umbrella/);
+  assert.match(visual, /comic-person--pier/);
+  assert.match(visual, /comic-person--surge/);
+  assert.match(css, /Bold comic panels/);
+  assert.match(css, /hazard-visual\.is-active/);
+  assert.match(css, /#ff(?:e51e|ab7a|da4e)/i);
+});
+
 test("removes visible numbering from the active presentation", async () => {
   const [app, map, hazards] = await Promise.all([
     readProjectFile("src/App.tsx"),

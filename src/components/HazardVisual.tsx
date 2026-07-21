@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useState, type ReactNode } from "react";
 import type { HazardSceneType } from "../data/hazards";
 
 export type { HazardSceneType } from "../data/hazards";
@@ -47,6 +49,11 @@ const scenes: Record<HazardSceneType, ReactNode> = {
       <span className="hazard-scene__sand-grain hazard-scene__sand-grain--two" />
       <span className="hazard-scene__sand-grain hazard-scene__sand-grain--three" />
       <span className="hazard-scene__sand-grain hazard-scene__sand-grain--four" />
+      <span className="comic-hand comic-hand--sand"><i /><i /><i /><i /></span>
+      <span className="comic-person comic-person--sand">
+        <i className="comic-person__head" /><i className="comic-person__eye comic-person__eye--left" />
+        <i className="comic-person__eye comic-person__eye--right" />
+      </span>
       <span className="hazard-scene__sand-field hazard-scene__sand-field--front" />
     </div>
   ),
@@ -62,6 +69,10 @@ const scenes: Record<HazardSceneType, ReactNode> = {
       <span className="hazard-scene__current-flow hazard-scene__current-flow--two" />
       <span className="hazard-scene__current-flow hazard-scene__current-flow--three" />
       <span className="hazard-scene__current-head" />
+      <span className="comic-person comic-person--swimmer">
+        <i className="comic-person__head" /><i className="comic-person__body" />
+        <i className="comic-person__arm comic-person__arm--left" /><i className="comic-person__arm comic-person__arm--right" />
+      </span>
     </div>
   ),
   "bluff-fall": (
@@ -76,6 +87,10 @@ const scenes: Record<HazardSceneType, ReactNode> = {
       <span className="hazard-scene__falling-rock hazard-scene__falling-rock--two" />
       <span className="hazard-scene__falling-rock hazard-scene__falling-rock--three" />
       <span className="hazard-scene__rock-dust" />
+      <span className="comic-person comic-person--cliff">
+        <i className="comic-person__head" /><i className="comic-person__body" />
+        <i className="comic-person__arm comic-person__arm--left" /><i className="comic-person__arm comic-person__arm--right" />
+      </span>
     </div>
   ),
   "evacuation-wave": (
@@ -93,6 +108,8 @@ const scenes: Record<HazardSceneType, ReactNode> = {
       <span className="hazard-scene__retreat-line hazard-scene__retreat-line--two" />
       <span className="hazard-scene__inland-path" />
       <span className="hazard-scene__inland-path-head" />
+      <span className="comic-person comic-person--tsunami-one"><i className="comic-person__head" /><i className="comic-person__body" /><i className="comic-person__arm comic-person__arm--left" /><i className="comic-person__leg comic-person__leg--left" /></span>
+      <span className="comic-person comic-person--tsunami-two"><i className="comic-person__head" /><i className="comic-person__body" /><i className="comic-person__arm comic-person__arm--right" /><i className="comic-person__leg comic-person__leg--right" /></span>
     </div>
   ),
   "coastal-storm": (
@@ -108,6 +125,7 @@ const scenes: Record<HazardSceneType, ReactNode> = {
       <span className="hazard-scene__rain-line hazard-scene__rain-line--three" />
       <span className="hazard-scene__rain-line hazard-scene__rain-line--four" />
       <span className="hazard-scene__strike-glow" />
+      <span className="comic-lifeguard-tower"><i /><i /><i /></span>
     </div>
   ),
   "windborne-object": (
@@ -125,6 +143,7 @@ const scenes: Record<HazardSceneType, ReactNode> = {
       <span className="hazard-scene__wind-grain hazard-scene__wind-grain--one" />
       <span className="hazard-scene__wind-grain hazard-scene__wind-grain--two" />
       <span className="hazard-scene__wind-grain hazard-scene__wind-grain--three" />
+      <span className="comic-person comic-person--umbrella"><i className="comic-person__head" /><i className="comic-person__body" /><i className="comic-person__arm comic-person__arm--left" /><i className="comic-person__arm comic-person__arm--right" /><i className="comic-person__leg comic-person__leg--left" /><i className="comic-person__leg comic-person__leg--right" /></span>
     </div>
   ),
   "structural-failure": (
@@ -141,6 +160,7 @@ const scenes: Record<HazardSceneType, ReactNode> = {
       <span className="hazard-scene__broken-board hazard-scene__broken-board--two" />
       <span className="hazard-scene__rough-wave hazard-scene__rough-wave--one" />
       <span className="hazard-scene__rough-wave hazard-scene__rough-wave--two" />
+      <span className="comic-person comic-person--pier"><i className="comic-person__head" /><i className="comic-person__body" /><i className="comic-person__arm comic-person__arm--left" /><i className="comic-person__leg comic-person__leg--right" /></span>
     </div>
   ),
   "tow-system": (
@@ -156,6 +176,10 @@ const scenes: Record<HazardSceneType, ReactNode> = {
       <span className="hazard-scene__parasail-cord hazard-scene__parasail-cord--right" />
       <span className="hazard-scene__parasailer-head" />
       <span className="hazard-scene__parasailer-body" />
+      <span className="hazard-scene__parasailer-arm hazard-scene__parasailer-arm--left" />
+      <span className="hazard-scene__parasailer-arm hazard-scene__parasailer-arm--right" />
+      <span className="hazard-scene__parasailer-leg hazard-scene__parasailer-leg--left" />
+      <span className="hazard-scene__parasailer-leg hazard-scene__parasailer-leg--right" />
       <span className="hazard-scene__tow-line" />
       <span className="hazard-scene__boat-hull" />
       <span className="hazard-scene__boat-cabin" />
@@ -175,6 +199,8 @@ const scenes: Record<HazardSceneType, ReactNode> = {
       <span className="hazard-scene__sneaker-foam hazard-scene__sneaker-foam--two" />
       <span className="hazard-scene__sneaker-foam hazard-scene__sneaker-foam--three" />
       <span className="hazard-scene__surge-shadow" />
+      <span className="comic-person comic-person--surge-one"><i className="comic-person__head" /><i className="comic-person__body" /><i className="comic-person__arm comic-person__arm--left" /></span>
+      <span className="comic-person comic-person--surge-two"><i className="comic-person__head" /><i className="comic-person__body" /><i className="comic-person__arm comic-person__arm--right" /></span>
     </div>
   ),
 };
@@ -185,22 +211,38 @@ export function HazardVisual({
   label,
   decorative = false,
 }: HazardVisualProps) {
-  const classes = ["hazard-visual", `hazard-visual--${sceneType}`, className]
+  const [active, setActive] = useState(false);
+  const classes = ["hazard-visual", `hazard-visual--${sceneType}`, active && "is-active", className]
     .filter(Boolean)
     .join(" ");
 
-  return (
-    <figure
-      className={classes}
-      data-scene-type={sceneType}
-      role={decorative ? undefined : "img"}
-      aria-hidden={decorative || undefined}
-      aria-label={decorative ? undefined : (label ?? sceneLabels[sceneType])}
-    >
+  const content = (
+    <>
       <div className="hazard-visual__frame">{scenes[sceneType]}</div>
       <span className="hazard-visual__rim" aria-hidden="true" />
       <span className="hazard-visual__glint" aria-hidden="true" />
-    </figure>
+    </>
+  );
+
+  if (decorative) {
+    return (
+      <span className={classes} data-scene-type={sceneType} aria-hidden="true">
+        {content}
+      </span>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className={classes}
+      data-scene-type={sceneType}
+      aria-label={`${label ?? sceneLabels[sceneType]}. Tap to animate.`}
+      aria-pressed={active}
+      onClick={() => setActive((current) => !current)}
+    >
+      {content}
+    </button>
   );
 }
 
