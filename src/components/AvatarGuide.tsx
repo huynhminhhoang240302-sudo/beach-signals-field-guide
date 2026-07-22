@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import type { MascotReaction } from "@/src/data/hazards";
 
+const mascotUrl = `${import.meta.env.BASE_URL}mascot.webp`;
+
 type AvatarGuideProps = {
   reaction?: MascotReaction | "confident";
   label?: string;
@@ -30,7 +32,7 @@ export function AvatarGuide({
       <span className="avatar-guide__frame">
         {/* The 48 KB WebP is already optimized and is also used as a WebGL texture. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/mascot.webp" alt="" draggable="false" />
+        <img src={mascotUrl} alt="" draggable="false" />
       </span>
       <span className="avatar-guide__reaction" aria-hidden="true"><i /><i /><i /></span>
     </motion.figure>

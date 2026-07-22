@@ -48,13 +48,16 @@ const sceneActiveImages: Record<HazardSceneType, string> = {
   "unexpected-surge": "/hazard-panels-active/sneaker-wave-active.png",
 };
 
+const publicAsset = (path: string) =>
+  `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
+
 function SceneImage({ className, sceneType }: { className: string; sceneType: HazardSceneType }) {
   return (
     // Native img keeps the retouched raster artwork untouched by an image optimizer.
     // eslint-disable-next-line @next/next/no-img-element
     <img
       className={className}
-      src={sceneActiveImages[sceneType]}
+      src={publicAsset(sceneActiveImages[sceneType])}
       alt=""
       draggable="false"
       loading="lazy"

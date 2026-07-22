@@ -29,6 +29,7 @@ export type HeroSceneProps = {
 type PointerTarget = MutableRefObject<{ x: number; y: number }>;
 
 const MASCOT_VISIBLE_HEIGHT = 0.91;
+const MASCOT_URL = `${import.meta.env.BASE_URL}mascot.webp`;
 
 function useWebGLSupport() {
   const [supported, setSupported] = useState<boolean | null>(null);
@@ -84,7 +85,7 @@ function MascotFallback({ compact = false }: { compact?: boolean }) {
           responsive content that should enter the framework image pipeline. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/mascot.webp"
+        src={MASCOT_URL}
         alt=""
         draggable={false}
         style={{
@@ -129,7 +130,7 @@ function MascotPlane({
   reducedMotion: boolean;
 }) {
   const group = useRef<THREE.Group>(null);
-  const sourceTexture = useLoader(THREE.TextureLoader, "/mascot.webp");
+  const sourceTexture = useLoader(THREE.TextureLoader, MASCOT_URL);
   const texture = useMemo(() => {
     const croppedTexture = sourceTexture.clone();
 
